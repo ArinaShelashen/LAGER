@@ -1,0 +1,134 @@
+[
+    {
+        "unsolved_pool": [
+            "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)O"
+        ],
+        "reaction": null,
+        "g_score": 0.0,
+        "h_score": 1.394,
+        "f_score": 1.3941
+    },
+    {
+        "unsolved_pool": [
+            "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)OCC"
+        ],
+        "reaction": {
+            "parent_mol": "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)O",
+            "buyables_cleaved": [
+                "O"
+            ],
+            "new_intermediates": [
+                "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)OCC"
+            ],
+            "rule_name": "ethyl_p_deprotection_inv"
+        },
+        "g_score": 0.3,
+        "h_score": 1.597,
+        "f_score": 1.8974
+    },
+    {
+        "unsolved_pool": [
+            "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(OCC)OCC"
+        ],
+        "reaction": {
+            "parent_mol": "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)OCC",
+            "buyables_cleaved": [
+                "O"
+            ],
+            "new_intermediates": [
+                "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(OCC)OCC"
+            ],
+            "rule_name": "ethyl_p_deprotection_inv"
+        },
+        "g_score": 0.3,
+        "h_score": 1.458,
+        "f_score": 1.7584
+    },
+    {
+        "unsolved_pool": [
+            "[2H]OC(=O)C(CCC)P(=O)(OCC)OCC"
+        ],
+        "reaction": {
+            "parent_mol": "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(OCC)OCC",
+            "buyables_cleaved": [
+                "CC(=O)c1ccc(N)cc1"
+            ],
+            "new_intermediates": [
+                "[2H]OC(=O)C(CCC)P(=O)(OCC)OCC"
+            ],
+            "rule_name": "condensation_rule_inv"
+        },
+        "g_score": 1.315,
+        "h_score": 2.021,
+        "f_score": 3.3356
+    },
+    {
+        "unsolved_pool": [
+            "CCCC(C(=O)O)P(=O)(OCC)OCC"
+        ],
+        "reaction": {
+            "parent_mol": "[2H]OC(=O)C(CCC)P(=O)(OCC)OCC",
+            "buyables_cleaved": [
+                "[2H]O"
+            ],
+            "new_intermediates": [
+                "CCCC(C(=O)O)P(=O)(OCC)OCC"
+            ],
+            "rule_name": "cooh_activation_inv"
+        },
+        "g_score": 1.615,
+        "h_score": 1.628,
+        "f_score": 3.2429
+    },
+    {
+        "unsolved_pool": [
+            "CCCC(C(=O)OCC)P(=O)(OCC)OCC"
+        ],
+        "reaction": {
+            "parent_mol": "CCCC(C(=O)O)P(=O)(OCC)OCC",
+            "buyables_cleaved": [
+                "[OH-]"
+            ],
+            "new_intermediates": [
+                "CCCC(C(=O)OCC)P(=O)(OCC)OCC"
+            ],
+            "rule_name": "ethyl_ester_base_deprotection_base_inv"
+        },
+        "g_score": 1.996,
+        "h_score": 1.574,
+        "f_score": 3.5697
+    },
+    {
+        "unsolved_pool": [
+            "CCCC(Br)C(=O)OCC"
+        ],
+        "reaction": {
+            "parent_mol": "CCCC(C(=O)OCC)P(=O)(OCC)OCC",
+            "buyables_cleaved": [
+                "CCOP(OCC)OCC"
+            ],
+            "new_intermediates": [
+                "CCCC(Br)C(=O)OCC"
+            ],
+            "rule_name": "arbuzov_trialkylphosphite_br_inv"
+        },
+        "g_score": 3.096,
+        "h_score": 1.398,
+        "f_score": 4.4935
+    },
+    {
+        "unsolved_pool": [],
+        "reaction": {
+            "parent_mol": "CCCC(Br)C(=O)OCC",
+            "buyables_cleaved": [
+                "CCO",
+                "CCCC(Br)C(=O)O"
+            ],
+            "new_intermediates": [],
+            "rule_name": "ethyl_ester_protection_inv"
+        },
+        "g_score": 3.55,
+        "h_score": 0.0,
+        "f_score": 3.5503
+    }
+]

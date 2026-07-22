@@ -1,0 +1,13 @@
+graph [
+	node [ id 0 label "C" ]
+	node [ id 1 label "O" ]
+	node [ id 2 label "H" ]
+	node [ id 3 label "H" ]
+	node [ id 4 label "H" ]
+	node [ id 5 label "H" ]
+	edge [ source 1 target 0 label "-" ]
+	edge [ source 2 target 0 label "-" ]
+	edge [ source 3 target 0 label "-" ]
+	edge [ source 4 target 0 label "-" ]
+	edge [ source 5 target 1 label "-" ]
+]

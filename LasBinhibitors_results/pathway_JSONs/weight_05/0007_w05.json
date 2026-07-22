@@ -1,0 +1,98 @@
+[
+    {
+        "unsolved_pool": [
+            "Cc1ccc(NC(=O)C(C#N)CC(C)C)cc1"
+        ],
+        "reaction": null,
+        "g_score": 0.0,
+        "h_score": 1.252,
+        "f_score": 1.2519
+    },
+    {
+        "unsolved_pool": [
+            "[2H]OC(=O)C(C#N)CC(C)C"
+        ],
+        "reaction": {
+            "parent_mol": "Cc1ccc(NC(=O)C(C#N)CC(C)C)cc1",
+            "buyables_cleaved": [
+                "Cc1ccc(N)cc1"
+            ],
+            "new_intermediates": [
+                "[2H]OC(=O)C(C#N)CC(C)C"
+            ],
+            "rule_name": "condensation_rule_inv"
+        },
+        "g_score": 1.0,
+        "h_score": 2.104,
+        "f_score": 3.104
+    },
+    {
+        "unsolved_pool": [
+            "CC(C)CC(C#N)C(=O)O"
+        ],
+        "reaction": {
+            "parent_mol": "[2H]OC(=O)C(C#N)CC(C)C",
+            "buyables_cleaved": [
+                "[2H]O"
+            ],
+            "new_intermediates": [
+                "CC(C)CC(C#N)C(=O)O"
+            ],
+            "rule_name": "cooh_activation_inv"
+        },
+        "g_score": 1.3,
+        "h_score": 1.518,
+        "f_score": 2.8177
+    },
+    {
+        "unsolved_pool": [
+            "CCOC(=O)C(C#N)CC(C)C"
+        ],
+        "reaction": {
+            "parent_mol": "CC(C)CC(C#N)C(=O)O",
+            "buyables_cleaved": [
+                "[OH-]"
+            ],
+            "new_intermediates": [
+                "CCOC(=O)C(C#N)CC(C)C"
+            ],
+            "rule_name": "ethyl_ester_base_deprotection_base_inv"
+        },
+        "g_score": 1.665,
+        "h_score": 1.48,
+        "f_score": 3.145
+    },
+    {
+        "unsolved_pool": [
+            "CCOC(=O)C(Br)CC(C)C"
+        ],
+        "reaction": {
+            "parent_mol": "CCOC(=O)C(C#N)CC(C)C",
+            "buyables_cleaved": [
+                "[C-]#N"
+            ],
+            "new_intermediates": [
+                "CCOC(=O)C(Br)CC(C)C"
+            ],
+            "rule_name": "sn2_br_cyanide_inv"
+        },
+        "g_score": 2.748,
+        "h_score": 1.413,
+        "f_score": 4.1615
+    },
+    {
+        "unsolved_pool": [],
+        "reaction": {
+            "parent_mol": "CCOC(=O)C(Br)CC(C)C",
+            "buyables_cleaved": [
+                "CCO",
+                "CC(C)CC(Br)C(=O)O"
+            ],
+            "new_intermediates": [],
+            "rule_name": "ethyl_ester_protection_inv"
+        },
+        "g_score": 3.186,
+        "h_score": 0.0,
+        "f_score": 3.1857
+    }
+]

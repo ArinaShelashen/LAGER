@@ -1,0 +1,98 @@
+[
+    {
+        "unsolved_pool": [
+            "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)O"
+        ],
+        "reaction": null,
+        "g_score": 0.0,
+        "h_score": 0.279,
+        "f_score": 0.2788
+    },
+    {
+        "unsolved_pool": [
+            "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)OCC"
+        ],
+        "reaction": {
+            "parent_mol": "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)O",
+            "buyables_cleaved": [
+                "O"
+            ],
+            "new_intermediates": [
+                "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)OCC"
+            ],
+            "rule_name": "ethyl_p_deprotection_inv"
+        },
+        "g_score": 0.3,
+        "h_score": 0.319,
+        "f_score": 0.6195
+    },
+    {
+        "unsolved_pool": [
+            "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(OCC)OCC"
+        ],
+        "reaction": {
+            "parent_mol": "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(O)OCC",
+            "buyables_cleaved": [
+                "O"
+            ],
+            "new_intermediates": [
+                "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(OCC)OCC"
+            ],
+            "rule_name": "ethyl_p_deprotection_inv"
+        },
+        "g_score": 0.3,
+        "h_score": 0.292,
+        "f_score": 0.5917
+    },
+    {
+        "unsolved_pool": [
+            "CCCC(Br)C(=O)Nc1ccc(C(C)=O)cc1"
+        ],
+        "reaction": {
+            "parent_mol": "CCCC(C(=O)Nc1ccc(C(C)=O)cc1)P(=O)(OCC)OCC",
+            "buyables_cleaved": [
+                "CCOP(OCC)OCC"
+            ],
+            "new_intermediates": [
+                "CCCC(Br)C(=O)Nc1ccc(C(C)=O)cc1"
+            ],
+            "rule_name": "arbuzov_trialkylphosphite_br_inv"
+        },
+        "g_score": 1.315,
+        "h_score": 0.238,
+        "f_score": 1.5527
+    },
+    {
+        "unsolved_pool": [
+            "[2H]OC(=O)C(Br)CCC"
+        ],
+        "reaction": {
+            "parent_mol": "CCCC(Br)C(=O)Nc1ccc(C(C)=O)cc1",
+            "buyables_cleaved": [
+                "CC(=O)c1ccc(N)cc1"
+            ],
+            "new_intermediates": [
+                "[2H]OC(=O)C(Br)CCC"
+            ],
+            "rule_name": "condensation_rule_inv"
+        },
+        "g_score": 2.381,
+        "h_score": 0.44,
+        "f_score": 2.8209
+    },
+    {
+        "unsolved_pool": [],
+        "reaction": {
+            "parent_mol": "[2H]OC(=O)C(Br)CCC",
+            "buyables_cleaved": [
+                "[2H]O",
+                "CCCC(Br)C(=O)O"
+            ],
+            "new_intermediates": [],
+            "rule_name": "cooh_activation_inv"
+        },
+        "g_score": 2.681,
+        "h_score": 0.0,
+        "f_score": 2.6807
+    }
+]

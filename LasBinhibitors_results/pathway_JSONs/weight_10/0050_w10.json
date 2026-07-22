@@ -1,0 +1,44 @@
+[
+    {
+        "unsolved_pool": [
+            "CC(=O)c1ccc(NC(=O)CC#N)cc1"
+        ],
+        "reaction": null,
+        "g_score": 0.0,
+        "h_score": 1.802,
+        "f_score": 1.8025
+    },
+    {
+        "unsolved_pool": [
+            "[2H]OC(=O)CC#N"
+        ],
+        "reaction": {
+            "parent_mol": "CC(=O)c1ccc(NC(=O)CC#N)cc1",
+            "buyables_cleaved": [
+                "CC(=O)c1ccc(N)cc1"
+            ],
+            "new_intermediates": [
+                "[2H]OC(=O)CC#N"
+            ],
+            "rule_name": "condensation_rule_inv"
+        },
+        "g_score": 1.0,
+        "h_score": 4.601,
+        "f_score": 5.6011
+    },
+    {
+        "unsolved_pool": [],
+        "reaction": {
+            "parent_mol": "[2H]OC(=O)CC#N",
+            "buyables_cleaved": [
+                "[2H]O",
+                "N#CCC(=O)O"
+            ],
+            "new_intermediates": [],
+            "rule_name": "cooh_activation_inv"
+        },
+        "g_score": 1.3,
+        "h_score": 0.0,
+        "f_score": 1.3
+    }
+]

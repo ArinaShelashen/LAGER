@@ -1,0 +1,13 @@
+name: mod_env
+channels:
+  - jakobandersen
+  - conda-forge
+  - defaults
+dependencies:
+  - graphviz=13.1.2
+  - mod=1.0.0.7
+  - python=3.10.19
+  - pandas>=2.0.0
+  - pip:
+      - rdkit==2025.9.5
+
