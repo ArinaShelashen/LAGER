@@ -1,0 +1,26 @@
+[
+    {
+        "unsolved_pool": [
+            "O=C(CS)Nc1ccc(Cl)c(Cl)c1"
+        ],
+        "reaction": null,
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [],
+        "reaction": {
+            "parent_mol": "O=C(CS)Nc1ccc(Cl)c(Cl)c1",
+            "buyables_cleaved": [
+                "Nc1ccc(Cl)c(Cl)c1",
+                "C(C(=O)O)S"
+            ],
+            "new_intermediates": [],
+            "rule_name": "thioesterification_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    }   
+]

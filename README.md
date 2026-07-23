@@ -6,19 +6,40 @@ This repository contains a computational **retrosynthesis engine** that uses
 - MØD-based graph transformations [1]
 - SAscore based heuristics [2]
 
-This is a brief instruction on installation and usage of the Retrosynthesis tool.
-If you need a more detailed guidance, please visit [Detailed Instruction for A* Retrosynthesis Engine](https://github.com/ArinaShelashen/LAGER/instruction.md).
+This is a brief instruction on installation and usage of the LAGER tool.
+If you need a more detailed guidance, please visit [Detailed Instruction for LAGER installation](https://github.com/ArinaShelashen/LAGER/blob/main/instruction.md).
 ### Table of Contents
+- [About LAGER](#about-lager)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Test Run](#test-run)
 - [Algorithm Description](#algorithm-description)
 - [Scripts overview](#overview-of-scripts)
 ---
+### About LAGER
+LAGER is an open-source framework for computer-assisted synthesis planning (CASP).
 
+**Original Paper**\
+TBA
+
+**Key Features**\
+🔸 **Graph-Grammar Core:** Built on double-pushout (DPO) graph-transformation reaction rules using the MØD engine.\
+🔸 **Heuristic Exploration:** Dynamically constructs and traverses synthesis pathway trees utilizing the A* algorithm.\
+🔸 **Deterministic Logic:** Relies on chemically based scoring and explicit expert rules rather than ML/AI models, ensuring 100% explainable pathways free from hallucinations.
+
+**Strengths**\
+🔹 **User-Controlled Action Space:** The exact set of allowed reactions and starting materials is fully customizable, eliminating exotic, hazardous, or prohibitively expensive synthesis steps.\
+🔹 **High Reliability:** Hand-coded reaction rules ensure rigorous chemical validity within the defined scope.
+
+**Limitations**\
+🔻 **Reaction Scope:** Limited to the size of the curating expert reaction rule set.\
+🔻 **Context-Insensitivity:** Current reaction rules do not fully evaluate structural environments outside the immediate reaction center.\
+🔻 **Synthesis Constraints:** Does not explicitly predict or optimize reaction conditions (e.g., catalysts, solvents, temperatures).
+
+---
 ### Requirements
 * **Python 3.10**
-* **RDKit:** For cheminformatics, canonicalization, and SA Score calculations.
+* **RDKit:** For cheminformatics, canonicalization, and SAscore calculations.
 * **MØD:** The C++ graph-rewriting engine executing the `.gml` rules.
 * **Graphviz:** Required for rendering the final pathway `.dot` files into `.png` images.
 <br>See `environment.yml`
@@ -35,12 +56,12 @@ If you need a more detailed guidance, please visit [Detailed Instruction for A* 
 
 ⚠️ **Operating System Note**: This tool relies heavily on MØD and Boost C++ libraries, which are natively compiled for Linux (linux-64). 
 If you are on **Windows**, you must use [WSL](https://learn.microsoft.com/en-us/windows/wsl/install).
-Use [Detailed Instruction](https://github.com/ArinaShelashen/LAGER/instruction.md) for more information.
+Use [Detailed Instruction](https://github.com/ArinaShelashen/LAGER/blob/main/instruction.md) for more information.
 
 We prepared a Conda environment for your convenience. 
-If you need to install Conda first, you can use [Detailed Instruction](https://github.com/ArinaShelashen/LAGER/instruction.md).
+If you need to install Conda first, you can use [Detailed Instruction](https://github.com/ArinaShelashen/LAGER/blob/main/instruction.md).
 
-To install A* Retrosynthesis tool:
+To install LAGER:
 1. **Clone the Repository**
 
 Download the project from GitHub to your local machine:
@@ -93,7 +114,8 @@ When a pathway is successfully found, the engine will generate
 - `pathway.png` Visualization of the generated retrosynthesis pathway.
 ---
 ## Algorithm Description
-### The A* Heuristics ($f(n)$ $=$ $g(n)$ $+$ $w_h$ $\cdot$ $h(n)$)
+### The A* Heuristics 
+### $f(n) = g(n) + w_{h} \cdot h(n)$
 
 To efficiently navigate the massive chemical space, we use A* Search guided by the following cost functions:
 

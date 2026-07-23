@@ -1,0 +1,118 @@
+[
+    {
+        "unsolved_pool": [
+            "O=C(Nc1ccccc1)C(S)Cc1ccc(O)c([N+](=O)[O-])c1"
+        ],
+        "reaction": null,
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [
+            "CC(=O)SC(Cc1ccc(O)c([N+](=O)[O-])c1)C(=O)Nc1ccccc1"
+        ],
+        "reaction": {
+            "parent_mol": "O=C(Nc1ccccc1)C(S)Cc1ccc(O)c([N+](=O)[O-])c1",
+            "buyables_cleaved": [
+                "[OH-]"
+            ],
+            "new_intermediates": [
+                "CC(=O)SC(Cc1ccc(O)c([N+](=O)[O-])c1)C(=O)Nc1ccccc1"
+            ],
+            "rule_name": "thioacetate_deprotection_base_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [
+            "CC(=O)Oc1ccc(CC(SC(C)=O)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]"
+        ],
+        "reaction": {
+            "parent_mol": "CC(=O)SC(Cc1ccc(O)c([N+](=O)[O-])c1)C(=O)Nc1ccccc1",
+            "buyables_cleaved": [
+                "[OH-]"
+            ],
+            "new_intermediates": [
+                "CC(=O)Oc1ccc(CC(SC(C)=O)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]"
+            ],
+            "rule_name": "phenol_o_deprotection_base_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [
+            "CC(=O)Oc1ccc(CC(Cl)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]"
+        ],
+        "reaction": {
+            "parent_mol": "CC(=O)Oc1ccc(CC(SC(C)=O)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]",
+            "buyables_cleaved": [
+                "CC(=O)[S-]"
+            ],
+            "new_intermediates": [
+                "CC(=O)Oc1ccc(CC(Cl)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]"
+            ],
+            "rule_name": "sn2_cl_thioacetate_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+
+    {
+        "unsolved_pool": [
+            "Oc1ccc(CC(Cl)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]"
+        ],
+        "reaction": {
+            "parent_mol": "CC(=O)Oc1ccc(CC(Cl)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]",
+            "buyables_cleaved": [
+                "CC(=O)OC(=O)C"
+            ],
+            "new_intermediates": [
+                "Oc1ccc(CC(Cl)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]"
+            ],
+            "rule_name": "phenol_OAc_protection_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+
+    {
+        "unsolved_pool": [
+            "[2H]OC(=O)C(Cl)Cc1ccc(O)c([N+](=O)[O-])c1"
+        ],
+        "reaction": {
+            "parent_mol": "Oc1ccc(CC(Cl)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]",
+            "buyables_cleaved": [
+                "Nc1ccccc1"
+            ],
+            "new_intermediates": [
+                "[2H]OC(=O)C(Cl)Cc1ccc(O)c([N+](=O)[O-])c1"
+            ],
+            "rule_name": "condensation_rule_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [],
+        "reaction": {
+            "parent_mol": "[2H]OC(=O)C(Cl)Cc1ccc(O)c([N+](=O)[O-])c1",
+            "buyables_cleaved": [
+                "[2H]O",
+                "O=C(O)C(Cl)Cc1ccc(O)c([N+](=O)[O-])c1"
+            ],
+            "new_intermediates": [            ],
+            "rule_name": "cooh_activation_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    }
+]

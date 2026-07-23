@@ -1,0 +1,99 @@
+[
+    {
+        "unsolved_pool": [
+            "O=C(Nc1ccc(Cl)c(Cl)c1)C(S)CC1CC1"
+        ],
+        "reaction": null,
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [
+            "CC(=O)SC(CC1CC1)C(=O)Nc1ccc(Cl)c(Cl)c1"
+        ],
+        "reaction": {
+            "parent_mol": "O=C(Nc1ccc(Cl)c(Cl)c1)C(S)CC1CC1",
+            "buyables_cleaved": [
+                "[OH-]"
+            ],
+            "new_intermediates": [
+                "CC(=O)SC(CC1CC1)C(=O)Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "rule_name": "thioacetate_deprotection_base_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [
+            "O=C(Nc1ccc(Cl)c(Cl)c1)C(Cl)CC1CC1"
+        ],
+        "reaction": {
+            "parent_mol": "CC(=O)SC(CC1CC1)C(=O)Nc1ccc(Cl)c(Cl)c1",
+            "buyables_cleaved": [
+                "CC(=O)[S-]"
+            ],
+            "new_intermediates": [
+                "O=C(Nc1ccc(Cl)c(Cl)c1)C(Cl)CC1CC1"
+            ],
+            "rule_name": "sn2_cl_thioacetate_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [
+            "[2H]OC(=O)C(Cl)CC1CC1"
+        ],
+        "reaction": {
+            "parent_mol": "O=C(Nc1ccc(Cl)c(Cl)c1)C(Cl)CC1CC1",
+            "buyables_cleaved": [
+                "Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "new_intermediates": [
+                "[2H]OC(=O)C(Cl)CC1CC1"
+            ],
+            "rule_name": "condensation_rule_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [
+            "O=C(O)C(Cl)CC1CC1"
+        ],
+        "reaction": {
+            "parent_mol": "[2H]OC(=O)C(Cl)CC1CC1",
+            "buyables_cleaved": [
+                "[2H]O"
+            ],
+            "new_intermediates": [
+                "O=C(O)C(Cl)CC1CC1"
+            ],
+            "rule_name": "cooh_activation_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    },
+    {
+        "unsolved_pool": [],
+        "reaction": {
+            "parent_mol": "O=C(O)C(Cl)CC1CC1",
+            "buyables_cleaved": [
+                "Cl",
+                "O=NO",
+                "NC(CC1CC1)C(=O)O"
+            ],
+            "new_intermediates": [],
+            "rule_name": "cl_deamination_inv"
+        },
+        "g_score": 0.0,
+        "h_score": 0.0,
+        "f_score": 0.0
+    }
+]

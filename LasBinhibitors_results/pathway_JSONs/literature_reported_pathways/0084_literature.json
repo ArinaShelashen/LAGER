@@ -22,9 +22,9 @@
             ],
             "rule_name": "ester_ammonolysis_hydroxylamine_inv"
         },
-        "g_score": 1.0,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 1.0
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [],
@@ -37,8 +37,8 @@
             "new_intermediates": [],
             "rule_name": "schotten-baumann_amide_formation_inv"
         },
-        "g_score": 2.05,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 2.05
+        "f_score": 0.0
     }
 ]

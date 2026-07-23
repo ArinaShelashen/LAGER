@@ -22,9 +22,9 @@
             ],
             "rule_name": "sn2_i_azoles_inv"
         },
-        "g_score": 1.0,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 1.0
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -40,9 +40,9 @@
             ],
             "rule_name": "sn2_cl_to_i_inv"
         },
-        "g_score": 2.05,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 2.05
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [],
@@ -55,8 +55,8 @@
             "new_intermediates": [],
             "rule_name": "amide_via_chloride_and_amine_inv"
         },
-        "g_score": 3.152,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 3.1525
+        "f_score": 0.0
     }
 ]

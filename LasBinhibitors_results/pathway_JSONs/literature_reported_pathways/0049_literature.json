@@ -23,9 +23,9 @@
             ],
             "rule_name": "3-2_cycloaddition_azide_b_inv"
         },
-        "g_score": 1.0,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 1.0
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -41,9 +41,9 @@
             ],
             "rule_name": "condensation_rule_inv"
         },
-        "g_score": 2.05,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 2.05
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [],
@@ -56,8 +56,8 @@
             "new_intermediates": [],
             "rule_name": "cooh_activation_inv"
         },
-        "g_score": 2.35,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 2.35
+        "f_score": 0.0
     }
 ]

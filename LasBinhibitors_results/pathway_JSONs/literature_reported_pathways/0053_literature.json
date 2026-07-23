@@ -22,9 +22,9 @@
             ],
             "rule_name": "ethyl_p_deprotection_inv"
         },
-        "g_score": 0.3,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 0.3
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -40,9 +40,9 @@
             ],
             "rule_name": "arbuzov_dialkylalkylphosphonites_cl_inv"
         },
-        "g_score": 1.315,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 1.315
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [],
@@ -55,8 +55,8 @@
             "new_intermediates": [],
             "rule_name": "amide_via_chloride_and_amine_inv"
         },
-        "g_score": 2.381,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 2.3807
+        "f_score": 0.0
     }
 ]

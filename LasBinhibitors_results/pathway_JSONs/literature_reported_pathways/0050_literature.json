@@ -22,9 +22,9 @@
             ],
             "rule_name": "condensation_rule_inv"
         },
-        "g_score": 1.0,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 1.0
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [],
@@ -37,8 +37,8 @@
             "new_intermediates": [],
             "rule_name": "cooh_activation_inv"
         },
-        "g_score": 1.3,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 1.3
+        "f_score": 0.0
     }
 ]

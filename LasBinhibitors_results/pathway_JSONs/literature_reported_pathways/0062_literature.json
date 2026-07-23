@@ -22,9 +22,9 @@
             ],
             "rule_name": "ethyl_p_deprotection_inv"
         },
-        "g_score": 0.3,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 0.3
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -40,9 +40,9 @@
             ],
             "rule_name": "ethyl_p_deprotection_inv"
         },
-        "g_score": 0.3,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 0.3
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -58,9 +58,9 @@
             ],
             "rule_name": "condensation_rule_inv"
         },
-        "g_score": 1.315,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 1.315
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -75,9 +75,9 @@
             ],
             "rule_name": "boc_primary_deprotection_inv"
         },
-        "g_score": 1.681,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 1.6807
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -94,9 +94,9 @@
             ],
             "rule_name": "condensation_rule_inv"
         },
-        "g_score": 2.765,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 2.7648
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -113,9 +113,9 @@
             ],
             "rule_name": "cooh_activation_inv"
         },
-        "g_score": 2.765,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 2.7648
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -132,9 +132,9 @@
             ],
             "rule_name": "ethyl_ester_base_deprotection_base_inv"
         },
-        "g_score": 2.765,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 2.7648
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -151,9 +151,9 @@
             ],
             "rule_name": "arbuzov_trialkylphosphite_br_inv"
         },
-        "g_score": 3.096,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 3.0955
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -170,9 +170,9 @@
             ],
             "rule_name": "cooh_activation_inv"
         },
-        "g_score": 3.096,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 3.0955
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [
@@ -187,9 +187,9 @@
             "new_intermediates": [],
             "rule_name": "boc_primary_protection_inv"
         },
-        "g_score": 3.518,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 3.518
+        "f_score": 0.0
     },
     {
         "unsolved_pool": [],
@@ -202,8 +202,8 @@
             "new_intermediates": [],
             "rule_name": "ethyl_ester_protection_inv"
         },
-        "g_score": 3.55,
+        "g_score": 0.0,
         "h_score": 0.0,
-        "f_score": 3.5503
+        "f_score": 0.0
     }
 ]
