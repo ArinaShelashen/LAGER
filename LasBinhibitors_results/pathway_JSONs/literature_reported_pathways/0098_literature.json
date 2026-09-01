@@ -62,7 +62,6 @@
         "h_score": 0.0,
         "f_score": 0.0
     },
-
     {
         "unsolved_pool": [
             "Oc1ccc(CC(Cl)C(=O)Nc2ccccc2)cc1[N+](=O)[O-]"
@@ -81,7 +80,6 @@
         "h_score": 0.0,
         "f_score": 0.0
     },
-
     {
         "unsolved_pool": [
             "[2H]OC(=O)C(Cl)Cc1ccc(O)c([N+](=O)[O-])c1"
@@ -108,7 +106,7 @@
                 "[2H]O",
                 "O=C(O)C(Cl)Cc1ccc(O)c([N+](=O)[O-])c1"
             ],
-            "new_intermediates": [            ],
+            "new_intermediates": [],
             "rule_name": "cooh_activation_inv"
         },
         "g_score": 0.0,

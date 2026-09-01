@@ -1,0 +1,105 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "CC(=O)c1ccc(NC(=O)CP(C)(=O)O)cc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 1.339,
+            "f_score": 1.3393
+        },
+        {
+            "unsolved_pool": [
+                "CC(=O)c1ccc(NC(=O)CP(C)(=O)O[Si](C)(C)C)cc1"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)c1ccc(NC(=O)CP(C)(=O)O)cc1",
+                "buyables_cleaved": [
+                    "CO"
+                ],
+                "new_intermediates": [
+                    "CC(=O)c1ccc(NC(=O)CP(C)(=O)O[Si](C)(C)C)cc1"
+                ],
+                "rule_name": "mono-tms_phosphonate_metanolysis_deprotection_inv",
+                "side_reactions": [
+                    "tms_metanolysis_deprotection"
+                ]
+            },
+            "g_score": 0.3,
+            "h_score": 1.555,
+            "f_score": 1.8548
+        },
+        {
+            "unsolved_pool": [
+                "CCOP(C)(=O)CC(=O)Nc1ccc(C(C)=O)cc1"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)c1ccc(NC(=O)CP(C)(=O)O[Si](C)(C)C)cc1",
+                "buyables_cleaved": [
+                    "C[Si](C)(C)Br"
+                ],
+                "new_intermediates": [
+                    "CCOP(C)(=O)CC(=O)Nc1ccc(C(C)=O)cc1"
+                ],
+                "rule_name": "dialkyl-phosphonate_tmsbr_mono-sylilation_deprotection_inv",
+                "side_reactions": [
+                    "dialkyl-phosphonate_tmsbr_mono-sylilation_deprotection"
+                ]
+            },
+            "g_score": 0.615,
+            "h_score": 1.398,
+            "f_score": 2.0126
+        },
+        {
+            "unsolved_pool": [
+                "CC(=O)c1ccc(NC(=O)CCl)cc1"
+            ],
+            "reaction": {
+                "parent_mol": "CCOP(C)(=O)CC(=O)Nc1ccc(C(C)=O)cc1",
+                "buyables_cleaved": [
+                    "CCOP(C)OCC"
+                ],
+                "new_intermediates": [
+                    "CC(=O)c1ccc(NC(=O)CCl)cc1"
+                ],
+                "rule_name": "arbuzov_dialkylalkylphosphonites_cl_inv",
+                "side_reactions": [
+                    "arbuzov_reaction_cl"
+                ]
+            },
+            "g_score": 1.646,
+            "h_score": 0.799,
+            "f_score": 2.445
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "CC(=O)c1ccc(NC(=O)CCl)cc1",
+                "buyables_cleaved": [
+                    "CC(=O)c1ccc(N)cc1",
+                    "O=C(Cl)CCl"
+                ],
+                "new_intermediates": [],
+                "rule_name": "amide_via_chloride_and_amine_inv",
+                "side_reactions": [
+                    "amide_via_chloride_and_amine"
+                ]
+            },
+            "g_score": 2.728,
+            "h_score": 0.0,
+            "f_score": 2.728
+        }
+    ],
+    "iteration_found": 6,
+    "time_found": 0.409,
+    "f_score": 2.7280375,
+    "g_score": 2.7280375,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 5,
+        "forward_hits": 0,
+        "forward_misses": 17
+    }
+}

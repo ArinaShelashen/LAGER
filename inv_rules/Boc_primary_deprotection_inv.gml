@@ -1,4 +1,5 @@
 rule [
+	labelType "term"
 	left [
 
 		edge [ source 5 target 6 label "=" ]

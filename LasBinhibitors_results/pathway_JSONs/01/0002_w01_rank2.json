@@ -1,0 +1,124 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "Cc1ccc(NC(=O)C(CC(C)C)OS(N)(=O)=O)cc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 0.271,
+            "f_score": 0.2707
+        },
+        {
+            "unsolved_pool": [
+                "Cc1ccc(NC(=O)C(O)CC(C)C)cc1"
+            ],
+            "reaction": {
+                "parent_mol": "Cc1ccc(NC(=O)C(CC(C)C)OS(N)(=O)=O)cc1",
+                "buyables_cleaved": [
+                    "NS(=O)(=O)Cl"
+                ],
+                "new_intermediates": [
+                    "Cc1ccc(NC(=O)C(O)CC(C)C)cc1"
+                ],
+                "rule_name": "o-sulfamoylation_inv",
+                "side_reactions": [
+                    "o-sulfamoylation"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 0.224,
+            "f_score": 1.2239
+        },
+        {
+            "unsolved_pool": [
+                "CCOC(CC(C)C)C(=O)Nc1ccc(C)cc1"
+            ],
+            "reaction": {
+                "parent_mol": "Cc1ccc(NC(=O)C(O)CC(C)C)cc1",
+                "buyables_cleaved": [
+                    "O"
+                ],
+                "new_intermediates": [
+                    "CCOC(CC(C)C)C(=O)Nc1ccc(C)cc1"
+                ],
+                "rule_name": "ethyl_ether_deprotection_inv",
+                "side_reactions": [
+                    "ethyl_deprotection_water"
+                ]
+            },
+            "g_score": 1.35,
+            "h_score": 0.232,
+            "f_score": 1.5823
+        },
+        {
+            "unsolved_pool": [
+                "[2H]OC(=O)C(CC(C)C)OCC"
+            ],
+            "reaction": {
+                "parent_mol": "CCOC(CC(C)C)C(=O)Nc1ccc(C)cc1",
+                "buyables_cleaved": [
+                    "Cc1ccc(N)cc1"
+                ],
+                "new_intermediates": [
+                    "[2H]OC(=O)C(CC(C)C)OCC"
+                ],
+                "rule_name": "amide_coupling_inv",
+                "side_reactions": [
+                    "amide_coupling"
+                ]
+            },
+            "g_score": 2.417,
+            "h_score": 0.384,
+            "f_score": 2.8019
+        },
+        {
+            "unsolved_pool": [
+                "CCOC(CC(C)C)C(=O)O"
+            ],
+            "reaction": {
+                "parent_mol": "[2H]OC(=O)C(CC(C)C)OCC",
+                "buyables_cleaved": [
+                    "[2H]O"
+                ],
+                "new_intermediates": [
+                    "CCOC(CC(C)C)C(=O)O"
+                ],
+                "rule_name": "cooh_activation_inv",
+                "side_reactions": [
+                    "cooh_activation"
+                ]
+            },
+            "g_score": 2.717,
+            "h_score": 0.266,
+            "f_score": 2.9839
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "CCOC(CC(C)C)C(=O)O",
+                "buyables_cleaved": [
+                    "CCO",
+                    "CC(C)CC(O)C(=O)O"
+                ],
+                "new_intermediates": [],
+                "rule_name": "ethyl_ether_protection_inv",
+                "side_reactions": []
+            },
+            "g_score": 3.153,
+            "h_score": 0.0,
+            "f_score": 3.1534
+        }
+    ],
+    "iteration_found": 21,
+    "time_found": 0.714,
+    "f_score": 3.1533749999999996,
+    "g_score": 3.1533749999999996,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 17,
+        "forward_hits": 0,
+        "forward_misses": 32
+    }
+}

@@ -1,0 +1,126 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "COC(=O)c1ccc(NC(=O)C(CC(C)C)P(=O)(O)O)cn1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 3.101,
+            "f_score": 3.1007
+        },
+        {
+            "unsolved_pool": [
+                "COC(=O)c1ccc(NC(=O)C(CC(C)C)P(=O)(O[Si](C)(C)C)O[Si](C)(C)C)cn1"
+            ],
+            "reaction": {
+                "parent_mol": "COC(=O)c1ccc(NC(=O)C(CC(C)C)P(=O)(O)O)cn1",
+                "buyables_cleaved": [
+                    "CO"
+                ],
+                "new_intermediates": [
+                    "COC(=O)c1ccc(NC(=O)C(CC(C)C)P(=O)(O[Si](C)(C)C)O[Si](C)(C)C)cn1"
+                ],
+                "rule_name": "bis-tms_phosphonate_metanolysis_deprotection_inv",
+                "side_reactions": [
+                    "tms_metanolysis_deprotection"
+                ]
+            },
+            "g_score": 0.3,
+            "h_score": 3.713,
+            "f_score": 4.0129
+        },
+        {
+            "unsolved_pool": [
+                "CCOP(=O)(OCC)C(CC(C)C)C(=O)Nc1ccc(C(=O)OC)nc1"
+            ],
+            "reaction": {
+                "parent_mol": "COC(=O)c1ccc(NC(=O)C(CC(C)C)P(=O)(O[Si](C)(C)C)O[Si](C)(C)C)cn1",
+                "buyables_cleaved": [
+                    "C[Si](C)(C)Br"
+                ],
+                "new_intermediates": [
+                    "CCOP(=O)(OCC)C(CC(C)C)C(=O)Nc1ccc(C(=O)OC)nc1"
+                ],
+                "rule_name": "alkyl-phosphonate_tmsbr_bis-sylilation_deprotection_inv",
+                "side_reactions": [
+                    "alkyl-phosphonate_tmsbr_bis-sylilation"
+                ]
+            },
+            "g_score": 0.615,
+            "h_score": 3.204,
+            "f_score": 3.8193
+        },
+        {
+            "unsolved_pool": [
+                "COC(=O)c1ccc(NC(=O)C(Br)CC(C)C)cn1"
+            ],
+            "reaction": {
+                "parent_mol": "CCOP(=O)(OCC)C(CC(C)C)C(=O)Nc1ccc(C(=O)OC)nc1",
+                "buyables_cleaved": [
+                    "CCOP(OCC)OCC"
+                ],
+                "new_intermediates": [
+                    "COC(=O)c1ccc(NC(=O)C(Br)CC(C)C)cn1"
+                ],
+                "rule_name": "arbuzov_trialkylphosphite_br_inv",
+                "side_reactions": [
+                    "arbuzov_reaction_br"
+                ]
+            },
+            "g_score": 1.646,
+            "h_score": 2.754,
+            "f_score": 4.3993
+        },
+        {
+            "unsolved_pool": [
+                "[2H]OC(=O)C(Br)CC(C)C"
+            ],
+            "reaction": {
+                "parent_mol": "COC(=O)c1ccc(NC(=O)C(Br)CC(C)C)cn1",
+                "buyables_cleaved": [
+                    "COC(=O)c1ccc(N)cn1"
+                ],
+                "new_intermediates": [
+                    "[2H]OC(=O)C(Br)CC(C)C"
+                ],
+                "rule_name": "amide_coupling_inv",
+                "side_reactions": [
+                    "amide_coupling"
+                ]
+            },
+            "g_score": 2.728,
+            "h_score": 4.331,
+            "f_score": 7.059
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "[2H]OC(=O)C(Br)CC(C)C",
+                "buyables_cleaved": [
+                    "[2H]O",
+                    "CC(C)CC(Br)C(=O)O"
+                ],
+                "new_intermediates": [],
+                "rule_name": "cooh_activation_inv",
+                "side_reactions": [
+                    "cooh_activation"
+                ]
+            },
+            "g_score": 3.028,
+            "h_score": 0.0,
+            "f_score": 3.028
+        }
+    ],
+    "iteration_found": 21,
+    "time_found": 0.79,
+    "f_score": 3.0280375,
+    "g_score": 3.0280375,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 16,
+        "forward_hits": 0,
+        "forward_misses": 31
+    }
+}

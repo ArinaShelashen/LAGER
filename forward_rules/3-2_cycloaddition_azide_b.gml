@@ -1,5 +1,6 @@
 rule [
 	ruleID "r_{38}, inverse"
+	labelType "term"
 	left [
 		node [ id 3 label "N-" ]
 		node [ id 4 label "N+" ]

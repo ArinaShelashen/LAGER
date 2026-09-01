@@ -1,5 +1,6 @@
 rule [
 	ruleID "r_{4}, inverse"
+	labelType "term"
 	left [
 		edge [ source 0 target 2 label "-" ]
 		edge [ source 5 target 7 label "-" ]

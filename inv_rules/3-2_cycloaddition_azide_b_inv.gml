@@ -1,4 +1,5 @@
 rule [
+	labelType "term"
 	left [
 		node [ id 12 label "N" ]
 		node [ id 13 label "N" ]

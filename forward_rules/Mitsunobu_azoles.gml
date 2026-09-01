@@ -1,0 +1,50 @@
+rule [
+	labelType "term"
+	left [
+		edge [ source 7 target 8 label "=" ]
+		edge [ source 1 target 2 label "-" ]
+		edge [ source 2 target 3 label "-" ]
+		edge [ source 4 target 5 label "-" ]
+	]
+	context [
+		node [ id 1 label "C" ]
+		node [ id 2 label "O" ]
+		node [ id 3 label "H" ]
+		node [ id 4 label "N" ]
+		node [ id 5 label "H" ]
+		node [ id 18 label "C" ]
+		node [ id 19 label "N" ]
+		node [ id 6 label "P" ]
+		node [ id 10 label "C" ]
+		node [ id 11 label "C" ]
+		node [ id 12 label "C" ]
+		node [ id 7 label "N" ]
+		node [ id 8 label "N" ]
+		node [ id 13 label "C" ]
+		node [ id 14 label "O" ]
+		node [ id 15 label "C" ]
+		node [ id 16 label "O" ]
+		edge [ source 4 target 18 label ":" ]
+		edge [ source 4 target 19 label ":" ]
+		edge [ source 6 target 10 label "-" ]
+		edge [ source 6 target 11 label "-" ]
+		edge [ source 6 target 12 label "-" ]
+		edge [ source 7 target 13 label "-" ]
+		edge [ source 13 target 14 label "=" ]
+		edge [ source 8 target 15 label "-" ]
+		edge [ source 15 target 16 label "=" ]
+	]
+	right [
+		edge [ source 7 target 8 label "-" ]
+		edge [ source 6 target 2 label "=" ]
+		edge [ source 1 target 4 label "-" ]
+		edge [ source 7 target 3 label "-" ]
+		edge [ source 8 target 5 label "-" ]
+	]
+	constrainAdj [
+		id 1
+		op "="
+		count 0
+		edgeLabels [ label ":" label "=" label "#" ]
+	]
+]

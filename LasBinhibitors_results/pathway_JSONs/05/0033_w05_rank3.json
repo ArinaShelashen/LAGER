@@ -1,0 +1,127 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "CCCC(C(=O)Nc1ccc(OC)cc1)P(=O)(O)O"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 1.357,
+            "f_score": 1.3569
+        },
+        {
+            "unsolved_pool": [
+                "CCCC(C(=O)Nc1ccc(OC)cc1)P(=O)(O[Si](C)(C)C)O[Si](C)(C)C"
+            ],
+            "reaction": {
+                "parent_mol": "CCCC(C(=O)Nc1ccc(OC)cc1)P(=O)(O)O",
+                "buyables_cleaved": [
+                    "CO"
+                ],
+                "new_intermediates": [
+                    "CCCC(C(=O)Nc1ccc(OC)cc1)P(=O)(O[Si](C)(C)C)O[Si](C)(C)C"
+                ],
+                "rule_name": "bis-tms_phosphonate_metanolysis_deprotection_inv",
+                "side_reactions": [
+                    "tms_metanolysis_deprotection"
+                ]
+            },
+            "g_score": 0.3,
+            "h_score": 1.712,
+            "f_score": 2.0121
+        },
+        {
+            "unsolved_pool": [
+                "CCCC(C(=O)Nc1ccc(OC)cc1)P(=O)(OCC)OCC"
+            ],
+            "reaction": {
+                "parent_mol": "CCCC(C(=O)Nc1ccc(OC)cc1)P(=O)(O[Si](C)(C)C)O[Si](C)(C)C",
+                "buyables_cleaved": [
+                    "C[Si](C)(C)Br"
+                ],
+                "new_intermediates": [
+                    "CCCC(C(=O)Nc1ccc(OC)cc1)P(=O)(OCC)OCC"
+                ],
+                "rule_name": "alkyl-phosphonate_tmsbr_bis-sylilation_deprotection_inv",
+                "side_reactions": [
+                    "alkyl-phosphonate_tmsbr_bis-sylilation"
+                ]
+            },
+            "g_score": 0.615,
+            "h_score": 1.425,
+            "f_score": 2.0403
+        },
+        {
+            "unsolved_pool": [
+                "[2H]OC(=O)C(CCC)P(=O)(OCC)OCC"
+            ],
+            "reaction": {
+                "parent_mol": "CCCC(C(=O)Nc1ccc(OC)cc1)P(=O)(OCC)OCC",
+                "buyables_cleaved": [
+                    "COc1ccc(N)cc1"
+                ],
+                "new_intermediates": [
+                    "[2H]OC(=O)C(CCC)P(=O)(OCC)OCC"
+                ],
+                "rule_name": "amide_coupling_inv",
+                "side_reactions": [
+                    "amide_coupling"
+                ]
+            },
+            "g_score": 1.646,
+            "h_score": 2.021,
+            "f_score": 3.6663
+        },
+        {
+            "unsolved_pool": [
+                "CCCC(C(=O)O)P(=O)(OCC)OCC"
+            ],
+            "reaction": {
+                "parent_mol": "[2H]OC(=O)C(CCC)P(=O)(OCC)OCC",
+                "buyables_cleaved": [
+                    "[2H]O"
+                ],
+                "new_intermediates": [
+                    "CCCC(C(=O)O)P(=O)(OCC)OCC"
+                ],
+                "rule_name": "cooh_activation_inv",
+                "side_reactions": [
+                    "cooh_activation"
+                ]
+            },
+            "g_score": 1.946,
+            "h_score": 1.628,
+            "f_score": 3.5737
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "CCCC(C(=O)O)P(=O)(OCC)OCC",
+                "buyables_cleaved": [
+                    "CCOP(OCC)OCC",
+                    "CCCC(Br)C(=O)O"
+                ],
+                "new_intermediates": [],
+                "rule_name": "arbuzov_trialkylphosphite_br_inv",
+                "side_reactions": [
+                    "phosphite_protonation",
+                    "arbuzov_reaction_br"
+                ]
+            },
+            "g_score": 5.043,
+            "h_score": 0.0,
+            "f_score": 5.043
+        }
+    ],
+    "iteration_found": 20,
+    "time_found": 0.728,
+    "f_score": 5.0430375000000005,
+    "g_score": 5.0430375000000005,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 15,
+        "forward_hits": 0,
+        "forward_misses": 30
+    }
+}

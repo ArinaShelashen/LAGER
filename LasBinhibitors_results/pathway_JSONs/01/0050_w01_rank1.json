@@ -1,0 +1,63 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "CC(=O)c1ccc(NC(=O)CC#N)cc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 0.18,
+            "f_score": 0.1802
+        },
+        {
+            "unsolved_pool": [
+                "[2H]OC(=O)CC#N"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)c1ccc(NC(=O)CC#N)cc1",
+                "buyables_cleaved": [
+                    "CC(=O)c1ccc(N)cc1"
+                ],
+                "new_intermediates": [
+                    "[2H]OC(=O)CC#N"
+                ],
+                "rule_name": "amide_coupling_inv",
+                "side_reactions": [
+                    "amide_coupling"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 0.46,
+            "f_score": 1.4601
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "[2H]OC(=O)CC#N",
+                "buyables_cleaved": [
+                    "[2H]O",
+                    "N#CCC(=O)O"
+                ],
+                "new_intermediates": [],
+                "rule_name": "cooh_activation_inv",
+                "side_reactions": [
+                    "cooh_activation"
+                ]
+            },
+            "g_score": 1.3,
+            "h_score": 0.0,
+            "f_score": 1.3
+        }
+    ],
+    "iteration_found": 5,
+    "time_found": 0.155,
+    "f_score": 1.3,
+    "g_score": 1.3,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 4,
+        "forward_hits": 0,
+        "forward_misses": 7
+    }
+}

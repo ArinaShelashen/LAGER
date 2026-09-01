@@ -1,4 +1,5 @@
 rule [
+	labelType "term"
 	left [
 		edge [ source 1 target 2 label "-" ]
 		edge [ source 3 target 4 label "-" ]
@@ -11,9 +12,11 @@ rule [
 		node [ id 5 label "O" ]
 		node [ id 6 label "C" ]
 		node [ id 7 label "H" ]
+		node [ id 8 label "_X" ]
 		edge [ source 2 target 6 label "-" ]
 		edge [ source 7 target 3 label "-" ]
 		edge [ source 5 target 1 label "=" ]
+		edge [ source 1 target 8 label "-" ]
 	]
 	right [
 		edge [ source 3 target 1 label "-" ]
@@ -27,8 +30,15 @@ rule [
 	]
 	constrainAdj [
 		id 6
+		op ">="
+		count 2
+		nodeLabels [ label "H" ]
+	]
+	constrainAdj [
+		id 8
 		op "<="
-		count 1
+		count 3
 		nodeLabels [ label "C" ]
 	]
+	constrainLabelAny [ label "_X" labels [ label "C" label "H" ] ]
 ]

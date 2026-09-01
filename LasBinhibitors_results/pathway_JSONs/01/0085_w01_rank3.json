@@ -1,0 +1,105 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "O=C(CS)Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 0.19,
+            "f_score": 0.1899
+        },
+        {
+            "unsolved_pool": [
+                "CC(=O)SCC(=O)Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "reaction": {
+                "parent_mol": "O=C(CS)Nc1ccc(Cl)c(Cl)c1",
+                "buyables_cleaved": [
+                    "[OH-]"
+                ],
+                "new_intermediates": [
+                    "CC(=O)SCC(=O)Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "rule_name": "thioacetate_deprotection_base_inv",
+                "side_reactions": [
+                    "thioacetate_deprotection"
+                ]
+            },
+            "g_score": 0.3,
+            "h_score": 0.19,
+            "f_score": 0.4902
+        },
+        {
+            "unsolved_pool": [
+                "O=C(CCl)Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)SCC(=O)Nc1ccc(Cl)c(Cl)c1",
+                "buyables_cleaved": [
+                    "CC(=O)[S-]"
+                ],
+                "new_intermediates": [
+                    "O=C(CCl)Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "rule_name": "sn2_cl_thioacetate_inv",
+                "side_reactions": [
+                    "sn2_cl_thioacetate"
+                ]
+            },
+            "g_score": 1.315,
+            "h_score": 0.17,
+            "f_score": 1.4849
+        },
+        {
+            "unsolved_pool": [
+                "[2H]OC(=O)CCl"
+            ],
+            "reaction": {
+                "parent_mol": "O=C(CCl)Nc1ccc(Cl)c(Cl)c1",
+                "buyables_cleaved": [
+                    "Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "new_intermediates": [
+                    "[2H]OC(=O)CCl"
+                ],
+                "rule_name": "amide_coupling_inv",
+                "side_reactions": [
+                    "amide_coupling"
+                ]
+            },
+            "g_score": 2.381,
+            "h_score": 0.48,
+            "f_score": 2.8604
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "[2H]OC(=O)CCl",
+                "buyables_cleaved": [
+                    "[2H]O",
+                    "O=C(O)CCl"
+                ],
+                "new_intermediates": [],
+                "rule_name": "cooh_activation_inv",
+                "side_reactions": [
+                    "cooh_activation"
+                ]
+            },
+            "g_score": 2.681,
+            "h_score": 0.0,
+            "f_score": 2.6807
+        }
+    ],
+    "iteration_found": 8,
+    "time_found": 0.402,
+    "f_score": 2.6807499999999997,
+    "g_score": 2.6807499999999997,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 5,
+        "forward_hits": 0,
+        "forward_misses": 14
+    }
+}

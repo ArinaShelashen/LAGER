@@ -1,4 +1,5 @@
 rule [
+	labelType "term"
 	left [
 		edge [ source 1 target 3 label "-" ]
 		edge [ source 6 target 5 label "-" ]
@@ -7,7 +8,7 @@ rule [
 		node [ id 1 label "C" ]
 		node [ id 2 label "O" ]
 		node [ id 3 label "O" ]
-		node [ id 4 label "H" ]
+		node [ id 4 label "2H" ]
 		node [ id 5 label "H" ]
 		node [ id 6 label "S" ]
 		node [ id 7 label "C" ]

@@ -1,0 +1,85 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "CC(=O)c1ccc(NC(=O)Cc2nn[nH]n2)cc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 2.077,
+            "f_score": 2.0771
+        },
+        {
+            "unsolved_pool": [
+                "CC(=O)c1ccc(NC(=O)CC#N)cc1"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)c1ccc(NC(=O)Cc2nn[nH]n2)cc1",
+                "buyables_cleaved": [
+                    "[H+]",
+                    "[N-]=[N+]=[N-]"
+                ],
+                "new_intermediates": [
+                    "CC(=O)c1ccc(NC(=O)CC#N)cc1"
+                ],
+                "rule_name": "3-2_cycloaddition_azide_b_inv",
+                "side_reactions": [
+                    "3-2_cycloaddition_azide_b"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 1.802,
+            "f_score": 2.8025
+        },
+        {
+            "unsolved_pool": [
+                "N#CCC(=O)Cl"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)c1ccc(NC(=O)CC#N)cc1",
+                "buyables_cleaved": [
+                    "CC(=O)c1ccc(N)cc1"
+                ],
+                "new_intermediates": [
+                    "N#CCC(=O)Cl"
+                ],
+                "rule_name": "schotten-baumann_amide_formation_inv",
+                "side_reactions": [
+                    "schotten-baumann_amide_formation"
+                ]
+            },
+            "g_score": 2.05,
+            "h_score": 3.4,
+            "f_score": 5.4501
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "N#CCC(=O)Cl",
+                "buyables_cleaved": [
+                    "O=C(Cl)CBr",
+                    "[C-]#N"
+                ],
+                "new_intermediates": [],
+                "rule_name": "sn2_br_cyanide_inv",
+                "side_reactions": [
+                    "sn2-br_cyanide"
+                ]
+            },
+            "g_score": 3.152,
+            "h_score": 0.0,
+            "f_score": 3.1525
+        }
+    ],
+    "iteration_found": 6,
+    "time_found": 0.213,
+    "f_score": 3.1525,
+    "g_score": 3.1525,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 4,
+        "forward_hits": 0,
+        "forward_misses": 9
+    }
+}

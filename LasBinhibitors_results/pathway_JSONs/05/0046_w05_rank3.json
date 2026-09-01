@@ -1,0 +1,64 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "CC(=O)c1ccc(NC(=O)Cn2cncn2)cc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 0.941,
+            "f_score": 0.941
+        },
+        {
+            "unsolved_pool": [
+                "O=C(Cl)Cn1cncn1"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)c1ccc(NC(=O)Cn2cncn2)cc1",
+                "buyables_cleaved": [
+                    "CC(=O)c1ccc(N)cc1"
+                ],
+                "new_intermediates": [
+                    "O=C(Cl)Cn1cncn1"
+                ],
+                "rule_name": "schotten-baumann_amide_formation_inv",
+                "side_reactions": [
+                    "schotten-baumann_amide_formation"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 1.419,
+            "f_score": 2.4188
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "O=C(Cl)Cn1cncn1",
+                "buyables_cleaved": [
+                    "O=C(Cl)CBr",
+                    "c1nc[nH]n1"
+                ],
+                "new_intermediates": [],
+                "rule_name": "sn2_hal_azoles_inv",
+                "side_reactions": [
+                    "schotten-baumann_amide_formation",
+                    "sn2_br_azoles"
+                ]
+            },
+            "g_score": 4.05,
+            "h_score": 0.0,
+            "f_score": 4.05
+        }
+    ],
+    "iteration_found": 10,
+    "time_found": 0.417,
+    "f_score": 4.05,
+    "g_score": 4.05,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 7,
+        "forward_hits": 0,
+        "forward_misses": 18
+    }
+}

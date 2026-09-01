@@ -1,0 +1,103 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "O=C(CC(=O)Nc1ccc(Cl)c(Cl)c1)NO"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 0.972,
+            "f_score": 0.972
+        },
+        {
+            "unsolved_pool": [
+                "CCOC(=O)CC(=O)Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "reaction": {
+                "parent_mol": "O=C(CC(=O)Nc1ccc(Cl)c(Cl)c1)NO",
+                "buyables_cleaved": [
+                    "NO"
+                ],
+                "new_intermediates": [
+                    "CCOC(=O)CC(=O)Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "rule_name": "ester_ammonolysis_hydroxylamine_inv",
+                "side_reactions": [
+                    "ester_ammonolysis"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 0.883,
+            "f_score": 1.8825
+        },
+        {
+            "unsolved_pool": [
+                "[2H]OC(=O)CC(=O)OCC"
+            ],
+            "reaction": {
+                "parent_mol": "CCOC(=O)CC(=O)Nc1ccc(Cl)c(Cl)c1",
+                "buyables_cleaved": [
+                    "Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "new_intermediates": [
+                    "[2H]OC(=O)CC(=O)OCC"
+                ],
+                "rule_name": "amide_coupling_inv",
+                "side_reactions": [
+                    "amide_coupling"
+                ]
+            },
+            "g_score": 2.05,
+            "h_score": 1.652,
+            "f_score": 3.7019
+        },
+        {
+            "unsolved_pool": [
+                "CCOC(=O)CC(=O)O"
+            ],
+            "reaction": {
+                "parent_mol": "[2H]OC(=O)CC(=O)OCC",
+                "buyables_cleaved": [
+                    "[2H]O"
+                ],
+                "new_intermediates": [
+                    "CCOC(=O)CC(=O)O"
+                ],
+                "rule_name": "cooh_activation_inv",
+                "side_reactions": [
+                    "cooh_activation"
+                ]
+            },
+            "g_score": 2.35,
+            "h_score": 0.943,
+            "f_score": 3.2933
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "CCOC(=O)CC(=O)O",
+                "buyables_cleaved": [
+                    "CCO",
+                    "O=C(O)CC(=O)O"
+                ],
+                "new_intermediates": [],
+                "rule_name": "ethyl_ester_protection_inv",
+                "side_reactions": []
+            },
+            "g_score": 2.767,
+            "h_score": 0.0,
+            "f_score": 2.7675
+        }
+    ],
+    "iteration_found": 12,
+    "time_found": 0.612,
+    "f_score": 2.7674999999999996,
+    "g_score": 2.7674999999999996,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 8,
+        "forward_hits": 0,
+        "forward_misses": 20
+    }
+}

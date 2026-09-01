@@ -1,0 +1,64 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "CCOP(C)(=O)CC(=O)Nc1ccc(C(C)=O)cc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 2.795,
+            "f_score": 2.7951
+        },
+        {
+            "unsolved_pool": [
+                "CCOP(C)(=O)CC(=O)Cl"
+            ],
+            "reaction": {
+                "parent_mol": "CCOP(C)(=O)CC(=O)Nc1ccc(C(C)=O)cc1",
+                "buyables_cleaved": [
+                    "CC(=O)c1ccc(N)cc1"
+                ],
+                "new_intermediates": [
+                    "CCOP(C)(=O)CC(=O)Cl"
+                ],
+                "rule_name": "schotten-baumann_amide_formation_inv",
+                "side_reactions": [
+                    "schotten-baumann_amide_formation"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 3.896,
+            "f_score": 4.8964
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "CCOP(C)(=O)CC(=O)Cl",
+                "buyables_cleaved": [
+                    "CCOP(C)OCC",
+                    "O=C(Cl)CBr"
+                ],
+                "new_intermediates": [],
+                "rule_name": "arbuzov_dialkylalkylphosphonites_br_inv",
+                "side_reactions": [
+                    "arbuzov_reaction_br",
+                    "acyl_arbuzov_reaction"
+                ]
+            },
+            "g_score": 4.05,
+            "h_score": 0.0,
+            "f_score": 4.05
+        }
+    ],
+    "iteration_found": 9,
+    "time_found": 0.438,
+    "f_score": 4.05,
+    "g_score": 4.05,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 1,
+        "cache_misses": 5,
+        "forward_hits": 2,
+        "forward_misses": 18
+    }
+}

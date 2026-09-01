@@ -10,17 +10,20 @@
     },
     {
         "unsolved_pool": [
-            "CCOP(=O)(O)C(CC1CCCCC1)C(=O)Nc1ccc(C(F)(F)F)cc1"
+            "O=C(Nc1ccc(C(F)(F)F)cc1)C(CC1CCCCC1)P(=O)(O[Si](C)(C)C)O[Si](C)(C)C"
         ],
         "reaction": {
             "parent_mol": "O=C(Nc1ccc(C(F)(F)F)cc1)C(CC1CCCCC1)P(=O)(O)O",
             "buyables_cleaved": [
-                "O"
+                "CO"
             ],
             "new_intermediates": [
-                "CCOP(=O)(O)C(CC1CCCCC1)C(=O)Nc1ccc(C(F)(F)F)cc1"
+                "O=C(Nc1ccc(C(F)(F)F)cc1)C(CC1CCCCC1)P(=O)(O[Si](C)(C)C)O[Si](C)(C)C"
             ],
-            "rule_name": "ethyl_p_deprotection_inv"
+            "rule_name": "bis-tms_phosphonate_metanolysis_deprotection_inv",
+            "side_reactions": [
+                "tms_metanolysis_deprotection"
+            ]
         },
         "g_score": 0.0,
         "h_score": 0.0,
@@ -31,14 +34,17 @@
             "CCOP(=O)(OCC)C(CC1CCCCC1)C(=O)Nc1ccc(C(F)(F)F)cc1"
         ],
         "reaction": {
-            "parent_mol": "CCOP(=O)(O)C(CC1CCCCC1)C(=O)Nc1ccc(C(F)(F)F)cc1",
+            "parent_mol": "O=C(Nc1ccc(C(F)(F)F)cc1)C(CC1CCCCC1)P(=O)(O[Si](C)(C)C)O[Si](C)(C)C",
             "buyables_cleaved": [
-                "O"
+                "C[Si](C)(C)Br"
             ],
             "new_intermediates": [
                 "CCOP(=O)(OCC)C(CC1CCCCC1)C(=O)Nc1ccc(C(F)(F)F)cc1"
             ],
-            "rule_name": "ethyl_p_deprotection_inv"
+            "rule_name": "alkyl-phosphonate_tmsbr_bis-sylilation_deprotection_inv",
+            "side_reactions": [
+                "alkyl-phosphonate_tmsbr_bis-sylilation"
+            ]
         },
         "g_score": 0.0,
         "h_score": 0.0,

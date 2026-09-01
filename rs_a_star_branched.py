@@ -1,4 +1,4 @@
-from save_tree import save_png, save_json, pathway_to_branched_tree_dict
+from save_tree import save_png, save_json, pathway_to_branched_tree_dict, stack_pngs_vertically
 from utils import (
     ACTIVATED_ACID_PATTERN,
     canonical_smiles, remove_stereo, remove_counterions, load_smiles_csv,
@@ -11,6 +11,7 @@ import time
 import os
 import json
 import heapq
+import copy
 from rdkit import Chem
 from rdkit.Chem import rdFingerprintGenerator
 from mod import *
@@ -63,25 +64,26 @@ def reconstruct_path(node):
 def a_star_search(target_smiles, rules, side_graphs,
                   buyables_set, side_set,
                   forward_rules, max_iterations=500, h_weight=0.5,
-                  stats=None):
+                  stats=None, num_pathways=3):
     """
-    Executes the A* search.
+    Executes the A* search, returning up to `num_pathways` distinct
+    retrosynthetic pathways to the target, ordered from best (lowest f)
+    to worst (in the order they're found).
     """
+    start_time = time.perf_counter()
 
-    # Start state: Only the target molecule needs to be solved
     start_h = calculate_h_score(target_smiles, h_weight)
-    start_node = AStarNode(unsolved_smiles=((target_smiles, 0,None),), g=0.0, h=start_h)
+    target_heavy_atoms = get_num_heavy_atoms(target_smiles)
+    start_node = AStarNode(unsolved_smiles=((target_smiles, 0, None),), g=0.0, h=start_h)
 
-
-    open_set = []  # Priority queue
+    open_set = []
     heapq.heappush(open_set, start_node)
 
-    closed_set = set()  # Keeps track of visited intermediates to avoid infinite loops
+    closed_set = set()
     iterations = 0
-    reaction_cache = {}  # Dictionary to store MØD results
-    forward_reaction_cache = {} # Dictionary to store MØD results for side reactions
+    reaction_cache = {}
+    forward_reaction_cache = {}
 
-    # statistics for the cache usage
     if stats is None:
         stats = {
             "cache_hits": 0,
@@ -90,16 +92,39 @@ def a_star_search(target_smiles, rules, side_graphs,
             "forward_misses": 0
         }
 
+    found_pathways = []  # collect metadata dicts for up to num_pathways
+
     while open_set and iterations < max_iterations:
 
-        # 1. Pop the most promising (f(n) low scored) intermediate
         current_node = heapq.heappop(open_set)
         iterations += 1
+        current_smiles_only = tuple(sorted(item[0] for item in current_node.unsolved))
 
         # 2. Check if we hit the goal (the tuple of unsolved molecules is empty)
         if len(current_node.unsolved) == 0:
-            print(f"DONE Retrosynthesis pathway found in {iterations} iterations.")
-            return True, reconstruct_path(current_node), iterations, stats
+            elapsed_to_path = time.perf_counter() - start_time
+            pathway_record = {
+                "pathway": reconstruct_path(current_node),
+                "iteration_found": iterations,
+                "time_found": round(elapsed_to_path, 3),
+                "f_score": current_node.f,
+                "g_score": current_node.g,
+                "h_score": current_node.h,
+                "stats_snapshot": copy.deepcopy(stats)
+            }
+            found_pathways.append(pathway_record)
+
+            print(
+                f"DONE Retrosynthesis pathway "
+                f"#{len(found_pathways)}/{num_pathways} found "
+                f"in {iterations} iterations (f={current_node.f:.3f})."
+            )
+            if len(found_pathways) >= num_pathways:
+                total_time = time.perf_counter() - start_time
+                # trace_file.close()
+                return True, found_pathways, iterations, stats, total_time
+            # Don't return -- keep searching for the next-best pathway
+            continue
 
         current_smiles_only = tuple(sorted(item[0] for item in current_node.unsolved))
         # Avoid revisiting the exact same overall state
@@ -107,53 +132,61 @@ def a_star_search(target_smiles, rules, side_graphs,
             continue
         closed_set.add(current_smiles_only)
 
+
         # 3. Pick ONE molecule (largest) from the unsolved pool to apply rules to.
         target_tuple = max(current_node.unsolved, key=lambda x: get_num_heavy_atoms(x[0]))
         target_smiles, current_depth, last_rule_name = target_tuple
         last_rule_name = last_rule_name.lower() if last_rule_name else ''
-
         # --- THE LOCAL SYMMETRY GUARDRAIL ---
         atoms = get_num_heavy_atoms(target_smiles)
         rep_ratio = get_local_repetitiveness(target_smiles)
 
         # If the molecule is large AND highly repetitive locally, MØD will freeze
-        if atoms > 50 and rep_ratio > 2.0:  # You can tune this 2.0 threshold!
+        if atoms > 50 and rep_ratio > 2.0:
             print(f"Blocked Polymer! {atoms} heavy atoms, Repetitiveness: {rep_ratio:.2f}. SMILES: {target_smiles}")
             continue
-
         # Check if we have already calculated the reactions for this exact SMILES
         if target_smiles in reaction_cache:
             generated_precursors = reaction_cache[target_smiles]
             stats["cache_hits"] += 1
         else:
             stats["cache_misses"] += 1
-
             # 4. Apply MØD rules ONLY to this molecule
             target_graph = Graph.fromSMILES(target_smiles)
-            dg = DG(graphDatabase=[target_graph, *side_graphs])
+            dg = DG(graphDatabase=[target_graph, *side_graphs],
+                    labelSettings=LabelSettings(LabelType.Term, LabelRelation.Unification))
             strat = addUniverse(*side_graphs) >> addSubset(target_graph) >> rules
 
             with dg.build() as builder:
                 builder.execute(strat)
-
             generated_precursors = []
-
             # 5. Evaluate generated reactions
-            for i, e in enumerate(dg.edges): # hyperedges: ordered pairs of multisets of vertices, the sources and the targets
+            for i, e in enumerate(dg.edges):
                 rule_name = list(e.rules)[0].name.lower() if e.rules else "UnknownRule"
 
                 precursors = []
                 for v in e.targets:
                     cs = canonical_smiles(v.graph.smiles)
-                    if cs: precursors.append(cs)
+                    if cs:
+                        precursors.append(cs)
                 generated_precursors.append((precursors, rule_name))
 
             # Save the results to the cache so we NEVER have to run MØD on this molecule again
             reaction_cache[target_smiles] = generated_precursors
-
+        all_reactants = []
         for precursors, rule_name in generated_precursors:
+            precursors = list(dict.fromkeys(precursors))
+            # Drop reaction branches immediately if any generated non-buyable intermediate is too large and repetitive
+            if any(
+                    (get_num_heavy_atoms(p) > 50 and get_local_repetitiveness(p) > 2.0) or get_num_heavy_atoms(p) > max(2.0 * target_heavy_atoms, 25)
+                    for p in precursors
+                    if p not in buyables_set and p not in side_set
+            ):
+                continue
 
+            side_reactions_names = []
             rule_name = rule_name.lower()
+
             # Separate products into buyables and remaining intermediates
             buyables_produced = [p for p in precursors if p in buyables_set or p in side_set]
             new_intermediates = [p for p in precursors if p not in buyables_set and p not in side_set]
@@ -163,12 +196,11 @@ def a_star_search(target_smiles, rules, side_graphs,
             step_cost = None
 
             requires_activation = False
-            # with the following conditions we ensure that acid part of the condensation reaction
-            # is activated right before the condensation reaction (one-pot process)
-            if last_rule_name == "condensation_rule_inv":
+            if last_rule_name == "amide_coupling_inv":
                 mol = Chem.MolFromSmiles(target_smiles)
                 if mol and mol.HasSubstructMatch(ACTIVATED_ACID_PATTERN):
                     requires_activation = True
+
             if requires_activation:
                 if rule_name != "cooh_activation_inv":
                     continue  # Veto all other branches
@@ -184,18 +216,18 @@ def a_star_search(target_smiles, rules, side_graphs,
                         stats["forward_misses"] += 1
                     else:
                         stats["forward_hits"] += 1
-                    num_forward_reactions = forward_reaction_cache[precursor_key]
+
+                    num_forward_reactions, side_reactions_names = forward_reaction_cache[precursor_key]
                     competing_side_reactions = max(0, num_forward_reactions - 1)
                     step_cost = 0.3 + competing_side_reactions * 2
                     depth_penalty = 0
 
             elif "protection" in rule_name:
-                # if we repeat the same reaction, it happens in one pot, we don't need additional efforts => cost=0
-                if (rule_name == last_rule_name) or ('deprotection_base' in rule_name and 'deprotection_base' in last_rule_name):
+                if (rule_name == last_rule_name) or (
+                        'deprotection_base' in rule_name and 'deprotection_base' in last_rule_name):
                     step_cost = 0.0
                     depth_penalty = 0
                 else:
-                    # following protection/deprotection reactions for the same group are forbidden (have no sense)
                     curr_is_de = "deprotection" in rule_name
                     last_is_de = "deprotection" in last_rule_name
                     curr_prefix = rule_name.replace("deprotection", "protection").split("protection")[0]
@@ -212,7 +244,10 @@ def a_star_search(target_smiles, rules, side_graphs,
                             forward_rules=forward_rules,
                             forward_reaction_cache=forward_reaction_cache
                         )
-                    num_forward_reactions = forward_reaction_cache[precursor_key]
+                        stats["forward_misses"] += 1
+                    else:
+                        stats["forward_hits"] += 1
+                    num_forward_reactions, side_reactions_names = forward_reaction_cache[precursor_key]
                     competing_side_reactions = max(0, num_forward_reactions - 1)
                     step_cost = 0.3 + competing_side_reactions * 2 + depth_penalty
 
@@ -225,42 +260,38 @@ def a_star_search(target_smiles, rules, side_graphs,
                         forward_rules=forward_rules,
                         forward_reaction_cache=forward_reaction_cache
                     )
-                num_forward_reactions = forward_reaction_cache[precursor_key]
+                    stats["forward_misses"] += 1
+                else:
+                    stats["forward_hits"] += 1
+                num_forward_reactions, side_reactions_names = forward_reaction_cache[precursor_key]
 
+                base_step_cost = 1
                 competing_side_reactions = max(0, num_forward_reactions - 1)
                 chemoselectivity_penalty = competing_side_reactions * 2
-                base_step_cost = 1
                 step_cost = base_step_cost + chemoselectivity_penalty + depth_penalty
 
             new_depth = current_depth + step_cost
-
-            # if in parallel branch of the same pathway g score is already higher,
-            # we take this value for the current branch as well, as a cost of the synthesis overall;
-            # depth of the current branch is however saved separately
             g_new = max(current_node.g, new_depth)
 
             # 5.2 Build the NEW state of unsolved molecules
-            # A. Take all currently unsolved molecules
             next_unsolved_list = list(current_node.unsolved)
-            # B. Remove the one we just reacted
             next_unsolved_list.remove(target_tuple)
-            # C. Add any NEW non-buyable fragments created by this reaction
             for int_smiles in new_intermediates:
                 next_unsolved_list.append((int_smiles, new_depth, rule_name))
 
-            # 5.3 Calculate the new heuristic: Sum of SA scores for all remaining unsolved molecules
+            # 5.3 Calculate heuristic
             if next_unsolved_list:
-                # we take max of the all possible "distances to the goal" as the limiting state for the overall synthesis
-                h_new = max(calculate_h_score(s[0],h_weight) for s in next_unsolved_list)
+                h_new = max(calculate_h_score(s[0], h_weight) for s in next_unsolved_list)
             else:
                 h_new = 0.0
 
-            # 5.4 Keep a record of what just happened for the visualization tree
+            # 5.4 Record reaction info
             reaction_record = {
                 "parent_mol": target_smiles,
                 "buyables_cleaved": buyables_produced,
                 "new_intermediates": new_intermediates,
                 "rule_name": rule_name,
+                "side_reactions": side_reactions_names,
             }
 
             new_node = AStarNode(
@@ -272,15 +303,24 @@ def a_star_search(target_smiles, rules, side_graphs,
             )
             heapq.heappush(open_set, new_node)
 
-    print(f"FAILED Search terminated after {iterations} iterations. No pathway found.")
+    total_time = time.perf_counter() - start_time
+    if found_pathways:
+        print(
+            f"Search terminated after {iterations} iterations. "
+            f"Found {len(found_pathways)}/{num_pathways} pathway(s)."
+        )
+        # trace_file.close()
+        return True, found_pathways, iterations, stats, total_time
 
-    return False, reconstruct_path(current_node), iterations, stats
+    print(f"FAILED Search terminated after {iterations} iterations. No pathway found.")
+    return False, [], iterations, stats, total_time
 
 
 # --- Main ---
 
 def main():
     parser = argparse.ArgumentParser(description="Retrosynthesis CLI using A* Search")
+    parser.add_argument("--num-pathways", type=int, default=3, help="Number of top pathways to find") #NEW
     parser.add_argument("--buyables", required=True, help="CSV with buyable SMILES")
     parser.add_argument("--side-products", required=True, help="CSV with side product SMILES")
     parser.add_argument("--rules", required=True, help="Folder with .gml rules")
@@ -313,7 +353,7 @@ def main():
         raise ValueError("Invalid target SMILES")
 
     # Run A* Search
-    pathway_found, optimal_pathway, iterations, stats = a_star_search(
+    pathway_found, pathways, iterations, stats, total_time = a_star_search(
         target_smiles=target_smiles,
         rules=rules,
         side_graphs=side_graphs,
@@ -322,23 +362,30 @@ def main():
         forward_rules=forward_rules,
         max_iterations=args.max_iters,
         h_weight=args.h_weight,
-        stats=None
+        stats=None,
+        num_pathways=args.num_pathways
     )
 
-    # Output the result
     if pathway_found:
-        output_file = "results/optimal_pathway.json"
-        with open(output_file, "w") as f:
-            json.dump(optimal_pathway, f, indent=4)
-        print(f"Saved pathway to {output_file}")
+        os.makedirs("results", exist_ok=True)
+        png_paths = []
+        labels = []
+        for i, pathway_record in enumerate(pathways, start=1):
+            output_file = f"results/optimal_pathway_{i}.json"
+            with open(output_file, "w") as f:
+                json.dump(pathway_record, f, indent=4)
+            print(f"Saved pathway #{i} to {output_file}")
 
-        # Convert the flat path into the dictionary structure
-        root_dict = pathway_to_branched_tree_dict(optimal_pathway, buyables_set, side_products_set)
+            root_dict = pathway_to_branched_tree_dict(pathway_record['pathway'], buyables_set, side_products_set)
+            png_path = f"results/pathway_{i}.png"
+            save_png(root_dict, output_filename=png_path)
+            png_paths.append(png_path)
 
-        # Generate the Graphviz dot file + PNGs
+            final_f_score = pathway_record["f_score"]
+            labels.append(f"PATHWAY {i}  (f = {final_f_score})")
 
-        save_png(root_dict,output_filename="results/pathway.png")
-
+        # Stack all pathway PNGs into one combined image, with captions
+        stack_pngs_vertically(png_paths, "results/pathways_combined.png", labels=labels)
     else:
         print("Failed to find a complete retrosynthetic pathway.")
 

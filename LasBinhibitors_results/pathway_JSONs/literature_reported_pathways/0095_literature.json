@@ -62,8 +62,6 @@
         "h_score": 0.0,
         "f_score": 0.0
     },
-
-
     {
         "unsolved_pool": [
             "Oc1ccc(NC(=O)C(Cl)Cc2ccccc2)cc1"
@@ -82,8 +80,6 @@
         "h_score": 0.0,
         "f_score": 0.0
     },
-
-
     {
         "unsolved_pool": [
             "[2H]OC(=O)C(Cl)Cc1ccccc1"

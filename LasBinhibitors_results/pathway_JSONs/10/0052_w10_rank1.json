@@ -1,0 +1,63 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "CCOP(C)(=O)CC(=O)Nc1ccc(C(C)=O)cc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 2.795,
+            "f_score": 2.7951
+        },
+        {
+            "unsolved_pool": [
+                "CC(=O)c1ccc(NC(=O)CCl)cc1"
+            ],
+            "reaction": {
+                "parent_mol": "CCOP(C)(=O)CC(=O)Nc1ccc(C(C)=O)cc1",
+                "buyables_cleaved": [
+                    "CCOP(C)OCC"
+                ],
+                "new_intermediates": [
+                    "CC(=O)c1ccc(NC(=O)CCl)cc1"
+                ],
+                "rule_name": "arbuzov_dialkylalkylphosphonites_cl_inv",
+                "side_reactions": [
+                    "arbuzov_reaction_cl"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 1.598,
+            "f_score": 2.5984
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "CC(=O)c1ccc(NC(=O)CCl)cc1",
+                "buyables_cleaved": [
+                    "CC(=O)c1ccc(N)cc1",
+                    "O=C(Cl)CCl"
+                ],
+                "new_intermediates": [],
+                "rule_name": "amide_via_chloride_and_amine_inv",
+                "side_reactions": [
+                    "amide_via_chloride_and_amine"
+                ]
+            },
+            "g_score": 2.05,
+            "h_score": 0.0,
+            "f_score": 2.05
+        }
+    ],
+    "iteration_found": 3,
+    "time_found": 0.217,
+    "f_score": 2.05,
+    "g_score": 2.05,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 2,
+        "forward_hits": 0,
+        "forward_misses": 9
+    }
+}

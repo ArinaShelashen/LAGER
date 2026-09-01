@@ -1,4 +1,5 @@
 rule [
+	labelType "term"
 	left [
 		edge [ source 1 target 4 label "-" ]
 		edge [ source 2 target 5 label "-" ]
@@ -19,6 +20,6 @@ rule [
 		id 4
 		op "="
 		count 1
-		nodeLabels [ label "O" ]
+		nodeLabels [ label "C" label "H" ]
 	]
 ]

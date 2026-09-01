@@ -1,0 +1,85 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "O=C(CS)Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 1.899,
+            "f_score": 1.8992
+        },
+        {
+            "unsolved_pool": [
+                "CC(=O)SCC(=O)Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "reaction": {
+                "parent_mol": "O=C(CS)Nc1ccc(Cl)c(Cl)c1",
+                "buyables_cleaved": [
+                    "[OH-]"
+                ],
+                "new_intermediates": [
+                    "CC(=O)SCC(=O)Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "rule_name": "thioacetate_deprotection_base_inv",
+                "side_reactions": [
+                    "thioacetate_deprotection"
+                ]
+            },
+            "g_score": 0.3,
+            "h_score": 1.902,
+            "f_score": 2.2021
+        },
+        {
+            "unsolved_pool": [
+                "CC(=O)SCC(=O)Cl"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)SCC(=O)Nc1ccc(Cl)c(Cl)c1",
+                "buyables_cleaved": [
+                    "Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "new_intermediates": [
+                    "CC(=O)SCC(=O)Cl"
+                ],
+                "rule_name": "schotten-baumann_amide_formation_inv",
+                "side_reactions": [
+                    "schotten-baumann_amide_formation",
+                    "thioester_aminolysis"
+                ]
+            },
+            "g_score": 3.315,
+            "h_score": 2.936,
+            "f_score": 6.2508
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "CC(=O)SCC(=O)Cl",
+                "buyables_cleaved": [
+                    "O=C(Cl)CBr",
+                    "CC(=O)[S-]"
+                ],
+                "new_intermediates": [],
+                "rule_name": "sn2_br_thioacetate_inv",
+                "side_reactions": [
+                    "sn2_br_thioacetate"
+                ]
+            },
+            "g_score": 4.481,
+            "h_score": 0.0,
+            "f_score": 4.4808
+        }
+    ],
+    "iteration_found": 9,
+    "time_found": 0.539,
+    "f_score": 4.4807500000000005,
+    "g_score": 4.4807500000000005,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 6,
+        "forward_hits": 0,
+        "forward_misses": 19
+    }
+}

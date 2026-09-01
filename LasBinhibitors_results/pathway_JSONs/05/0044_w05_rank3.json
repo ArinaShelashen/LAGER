@@ -1,0 +1,84 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "CC(=O)c1ccc(NC(=O)Cn2ccnc2)cc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 0.934,
+            "f_score": 0.9337
+        },
+        {
+            "unsolved_pool": [
+                "O=C(Cl)Cn1ccnc1"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)c1ccc(NC(=O)Cn2ccnc2)cc1",
+                "buyables_cleaved": [
+                    "CC(=O)c1ccc(N)cc1"
+                ],
+                "new_intermediates": [
+                    "O=C(Cl)Cn1ccnc1"
+                ],
+                "rule_name": "schotten-baumann_amide_formation_inv",
+                "side_reactions": [
+                    "schotten-baumann_amide_formation"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 1.377,
+            "f_score": 2.3766
+        },
+        {
+            "unsolved_pool": [
+                "O=C(Cl)C(=O)n1ccnc1"
+            ],
+            "reaction": {
+                "parent_mol": "O=C(Cl)Cn1ccnc1",
+                "buyables_cleaved": [
+                    "[H][H]"
+                ],
+                "new_intermediates": [
+                    "O=C(Cl)C(=O)n1ccnc1"
+                ],
+                "rule_name": "amide_reduction_inv",
+                "side_reactions": [
+                    "amide_reduction"
+                ]
+            },
+            "g_score": 2.05,
+            "h_score": 1.531,
+            "f_score": 3.5812
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "O=C(Cl)C(=O)n1ccnc1",
+                "buyables_cleaved": [
+                    "O=C(Cl)C(=O)Cl",
+                    "c1c[nH]cn1"
+                ],
+                "new_intermediates": [],
+                "rule_name": "schotten-baumann_amide_formation_inv",
+                "side_reactions": [
+                    "schotten-baumann_amide_formation"
+                ]
+            },
+            "g_score": 3.152,
+            "h_score": 0.0,
+            "f_score": 3.1525
+        }
+    ],
+    "iteration_found": 10,
+    "time_found": 0.438,
+    "f_score": 3.1525,
+    "g_score": 3.1525,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 7,
+        "forward_hits": 0,
+        "forward_misses": 20
+    }
+}

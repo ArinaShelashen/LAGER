@@ -1,0 +1,103 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "O=C(CC(=O)Nc1ccc(Cl)c(Cl)c1)NO"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 1.944,
+            "f_score": 1.944
+        },
+        {
+            "unsolved_pool": [
+                "CCOC(=O)CC(=O)Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "reaction": {
+                "parent_mol": "O=C(CC(=O)Nc1ccc(Cl)c(Cl)c1)NO",
+                "buyables_cleaved": [
+                    "NO"
+                ],
+                "new_intermediates": [
+                    "CCOC(=O)CC(=O)Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "rule_name": "ester_ammonolysis_hydroxylamine_inv",
+                "side_reactions": [
+                    "ester_ammonolysis"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 1.765,
+            "f_score": 2.765
+        },
+        {
+            "unsolved_pool": [
+                "O=C(O)CC(=O)Nc1ccc(Cl)c(Cl)c1"
+            ],
+            "reaction": {
+                "parent_mol": "CCOC(=O)CC(=O)Nc1ccc(Cl)c(Cl)c1",
+                "buyables_cleaved": [
+                    "CCO"
+                ],
+                "new_intermediates": [
+                    "O=C(O)CC(=O)Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "rule_name": "ethyl_ester_protection_inv",
+                "side_reactions": []
+            },
+            "g_score": 1.35,
+            "h_score": 1.722,
+            "f_score": 3.0724
+        },
+        {
+            "unsolved_pool": [
+                "O=C(O)CC(=O)Cl"
+            ],
+            "reaction": {
+                "parent_mol": "O=C(O)CC(=O)Nc1ccc(Cl)c(Cl)c1",
+                "buyables_cleaved": [
+                    "Nc1ccc(Cl)c(Cl)c1"
+                ],
+                "new_intermediates": [
+                    "O=C(O)CC(=O)Cl"
+                ],
+                "rule_name": "schotten-baumann_amide_formation_inv",
+                "side_reactions": [
+                    "schotten-baumann_amide_formation"
+                ]
+            },
+            "g_score": 2.417,
+            "h_score": 2.61,
+            "f_score": 5.0272
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "O=C(O)CC(=O)Cl",
+                "buyables_cleaved": [
+                    "[OH-]",
+                    "CCOC(=O)CC(=O)Cl"
+                ],
+                "new_intermediates": [],
+                "rule_name": "ethyl_ester_base_deprotection_base_inv",
+                "side_reactions": [
+                    "ethyl_ester_base_deprotection"
+                ]
+            },
+            "g_score": 2.838,
+            "h_score": 0.0,
+            "f_score": 2.8384
+        }
+    ],
+    "iteration_found": 11,
+    "time_found": 0.534,
+    "f_score": 2.838375,
+    "g_score": 2.838375,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 7,
+        "forward_hits": 0,
+        "forward_misses": 18
+    }
+}

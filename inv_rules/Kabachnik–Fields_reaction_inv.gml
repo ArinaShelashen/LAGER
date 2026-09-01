@@ -1,4 +1,5 @@
 rule [
+	labelType "term"
 	left [
 		edge [ source 9 target 10 label "=" ]
 		edge [ source 2 target 16 label "-" ]
@@ -9,8 +10,8 @@ rule [
 	context [
 		node [ id 1 label "C" ]
 		node [ id 2 label "O" ]
-		node [ id 3 label "H" ]
-		node [ id 4 label "H" ]
+		node [ id 3 label "_X" ]
+		node [ id 4 label "_W" ]
 		node [ id 5 label "N" ]
 		node [ id 9 label "P" ]
 		node [ id 10 label "O" ]
@@ -20,12 +21,16 @@ rule [
 		node [ id 14 label "O" ]
 		node [ id 15 label "C" ]
 		node [ id 16 label "H" ]
+		node [ id 17 label "_Z" ]
+		node [ id 18 label "_Y" ]
 		edge [ source 14 target 9 label "-" ]
 		edge [ source 15 target 14 label "-" ]
 		edge [ source 13 target 12 label "-" ]
 		edge [ source 12 target 9 label "-" ]
 		edge [ source 4 target 5 label "-" ]
 		edge [ source 3 target 1 label "-" ]
+		edge [ source 1 target 18 label "-" ]
+		edge [ source 5 target 17 label "-" ]
 	]
 	right [
 		edge [ source 9 target 10 label "-" ]
@@ -33,4 +38,8 @@ rule [
 		edge [ source 1 target 2 label "=" ]
 		edge [ source 10 target 11 label "-" ]
 	]
+	constrainLabelAny [ label "_X" labels [ label "C" label "H" ] ]
+	constrainLabelAny [ label "_Y" labels [ label "C" label "H" ] ]
+	constrainLabelAny [ label "_Z" labels [ label "C" label "H" ] ]
+	constrainLabelAny [ label "_W" labels [ label "C" label "H" ] ]
 ]

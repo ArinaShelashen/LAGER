@@ -1,0 +1,108 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "O=C(Nc1nc2ccccc2[nH]1)C(S)Cc1ccccc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 2.633,
+            "f_score": 2.6328
+        },
+        {
+            "unsolved_pool": [
+                "CC(=O)SC(Cc1ccccc1)C(=O)Nc1nc2ccccc2[nH]1"
+            ],
+            "reaction": {
+                "parent_mol": "O=C(Nc1nc2ccccc2[nH]1)C(S)Cc1ccccc1",
+                "buyables_cleaved": [
+                    "[OH-]"
+                ],
+                "new_intermediates": [
+                    "CC(=O)SC(Cc1ccccc1)C(=O)Nc1nc2ccccc2[nH]1"
+                ],
+                "rule_name": "thioacetate_deprotection_base_inv",
+                "side_reactions": [
+                    "thioacetate_deprotection"
+                ]
+            },
+            "g_score": 0.3,
+            "h_score": 2.697,
+            "f_score": 2.997
+        },
+        {
+            "unsolved_pool": [
+                "[2H]OC(=O)C(Cc1ccccc1)SC(C)=O"
+            ],
+            "reaction": {
+                "parent_mol": "CC(=O)SC(Cc1ccccc1)C(=O)Nc1nc2ccccc2[nH]1",
+                "buyables_cleaved": [
+                    "Nc1nc2ccccc2[nH]1"
+                ],
+                "new_intermediates": [
+                    "[2H]OC(=O)C(Cc1ccccc1)SC(C)=O"
+                ],
+                "rule_name": "amide_coupling_inv",
+                "side_reactions": [
+                    "acyl_azole",
+                    "thioester_aminolysis",
+                    "amide_coupling"
+                ]
+            },
+            "g_score": 5.315,
+            "h_score": 3.326,
+            "f_score": 8.6409
+        },
+        {
+            "unsolved_pool": [
+                "CC(=O)SC(Cc1ccccc1)C(=O)O"
+            ],
+            "reaction": {
+                "parent_mol": "[2H]OC(=O)C(Cc1ccccc1)SC(C)=O",
+                "buyables_cleaved": [
+                    "[2H]O"
+                ],
+                "new_intermediates": [
+                    "CC(=O)SC(Cc1ccccc1)C(=O)O"
+                ],
+                "rule_name": "cooh_activation_inv",
+                "side_reactions": [
+                    "cooh_activation"
+                ]
+            },
+            "g_score": 5.615,
+            "h_score": 2.489,
+            "f_score": 8.1041
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "CC(=O)SC(Cc1ccccc1)C(=O)O",
+                "buyables_cleaved": [
+                    "O=C(O)C(Br)Cc1ccccc1",
+                    "CC(=O)[S-]"
+                ],
+                "new_intermediates": [],
+                "rule_name": "sn2_br_thioacetate_inv",
+                "side_reactions": [
+                    "sn2_br_thioacetate",
+                    "thioacetate_protonation"
+                ]
+            },
+            "g_score": 8.896,
+            "h_score": 0.0,
+            "f_score": 8.8957
+        }
+    ],
+    "iteration_found": 19,
+    "time_found": 1.035,
+    "f_score": 8.89575,
+    "g_score": 8.89575,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 14,
+        "forward_hits": 0,
+        "forward_misses": 33
+    }
+}

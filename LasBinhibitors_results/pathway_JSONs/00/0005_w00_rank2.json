@@ -1,0 +1,106 @@
+{
+    "pathway": [
+        {
+            "unsolved_pool": [
+                "Cc1ccc(NC(=O)C(CC(C)C)C(N)=O)cc1"
+            ],
+            "reaction": null,
+            "g_score": 0.0,
+            "h_score": 0.0,
+            "f_score": 0.0
+        },
+        {
+            "unsolved_pool": [
+                "[2H]OC(=O)C(CC(C)C)C(N)=O"
+            ],
+            "reaction": {
+                "parent_mol": "Cc1ccc(NC(=O)C(CC(C)C)C(N)=O)cc1",
+                "buyables_cleaved": [
+                    "Cc1ccc(N)cc1"
+                ],
+                "new_intermediates": [
+                    "[2H]OC(=O)C(CC(C)C)C(N)=O"
+                ],
+                "rule_name": "amide_coupling_inv",
+                "side_reactions": [
+                    "amide_coupling"
+                ]
+            },
+            "g_score": 1.0,
+            "h_score": 0.0,
+            "f_score": 1.0
+        },
+        {
+            "unsolved_pool": [
+                "CC(C)CC(C(N)=O)C(=O)O"
+            ],
+            "reaction": {
+                "parent_mol": "[2H]OC(=O)C(CC(C)C)C(N)=O",
+                "buyables_cleaved": [
+                    "[2H]O"
+                ],
+                "new_intermediates": [
+                    "CC(C)CC(C(N)=O)C(=O)O"
+                ],
+                "rule_name": "cooh_activation_inv",
+                "side_reactions": [
+                    "cooh_activation",
+                    "activator_prim_amide_dehydration"
+                ]
+            },
+            "g_score": 3.3,
+            "h_score": 0.0,
+            "f_score": 3.3
+        },
+        {
+            "unsolved_pool": [
+                "CCOC(=O)C(CC(C)C)C(N)=O"
+            ],
+            "reaction": {
+                "parent_mol": "CC(C)CC(C(N)=O)C(=O)O",
+                "buyables_cleaved": [
+                    "[OH-]"
+                ],
+                "new_intermediates": [
+                    "CCOC(=O)C(CC(C)C)C(N)=O"
+                ],
+                "rule_name": "ethyl_ester_base_deprotection_base_inv",
+                "side_reactions": [
+                    "ethyl_ester_base_deprotection"
+                ]
+            },
+            "g_score": 3.765,
+            "h_score": 0.0,
+            "f_score": 3.765
+        },
+        {
+            "unsolved_pool": [],
+            "reaction": {
+                "parent_mol": "CCOC(=O)C(CC(C)C)C(N)=O",
+                "buyables_cleaved": [
+                    "N",
+                    "CCOC(=O)C(CC(C)C)C(=O)OCC"
+                ],
+                "new_intermediates": [],
+                "rule_name": "ester_ammonolysis_hydroxylamine_inv",
+                "side_reactions": [
+                    "ester_ammonolysis"
+                ]
+            },
+            "g_score": 4.953,
+            "h_score": 0.0,
+            "f_score": 4.9532
+        }
+    ],
+    "iteration_found": 39,
+    "time_found": 1.491,
+    "f_score": 4.95325,
+    "g_score": 4.95325,
+    "h_score": 0.0,
+    "stats_snapshot": {
+        "cache_hits": 0,
+        "cache_misses": 28,
+        "forward_hits": 0,
+        "forward_misses": 64
+    }
+}

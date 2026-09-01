@@ -28,4 +28,15 @@ acetate_ion,CC(=O)[O-]
 ethylate_ion,CC[O-]
 acetic_acid,CC(=O)O
 ,[2H]Cl
-xx,OC(=O)C(Cl)Cc2cc(N(=O)=O)c(O)cc2
+bromodihydroxyborane,OB(O)Br
+hydroxymagnesium_chloride,O[Mg]Cl
+hydroxymagnesium_bromide,O[Mg]Br
+hydroxymagnesium_iodide,O[Mg]I
+2-bromoethyl-benzene,c1ccccc1CCBr
+ethylbenzene,c1ccccc1CC
+3-4-dihydropyran,O1C=CCCC1
+DEHD,CCOC(=O)NNC(=O)OCC
+triphenylphosphinoxide,P(=O)(C1=CC=CC=C1)(C1=CC=CC=C1)C1=CC=CC=C1
+DPPA-DEAD,CCOC(=O)NN(C(=O)OCC)P(=O)(Oc1ccccc1)Oc2ccccc2
+4-nitrophenyl_phenyl_sulfide,O=[N+]([O-])c1ccc(Sc2ccccc2)cc1
+4-nitrophenylthio_acetic_acid,O=C(O)CSc1ccc([N+]([O-])=O)cc1
