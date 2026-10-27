@@ -2,7 +2,7 @@
 rem Starts LAGER in Docker and opens it in the browser.
 rem Requirement: Docker Desktop is installed and running.
 
-set IMAGE=lager
+set IMAGE=arinashelashen/lager:latest
 set PORT=5000
 
 docker info >nul 2>&1
@@ -17,6 +17,7 @@ rem Remove a LAGER container left over from an earlier session
 docker rm -f lager >nul 2>&1
 
 echo Starting LAGER...
+docker pull %IMAGE% >nul 2>&1
 docker run -d --rm --name lager -p 127.0.0.1:%PORT%:5000 %IMAGE% >nul
 if errorlevel 1 (
     echo LAGER could not be started. Is the image "%IMAGE%" available?
