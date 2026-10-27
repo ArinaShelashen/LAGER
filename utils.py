@@ -14,7 +14,10 @@ from rdkit import Chem
 from rdkit.Chem import RDConfig, rdFingerprintGenerator
 sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
 import sascorer
+import concurrent.futures
 from mod import *
+import multiprocessing as mp
+
 
 # Common sensitive functional groups
 FG_SMARTS = {
@@ -79,7 +82,8 @@ def load_smiles_csv(file_path):
 def generate_graphs(csv_file, addHs=True):
     output_file = csv_file.replace(".csv", "_graphs")
     os.makedirs(output_file, exist_ok=True)
-    cmd = ["python", "data_prep/mol_graphs_creator.py", csv_file, "-o", output_file, "-Hs", str(addHs)]
+    helper = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data_prep", "mol_graphs_creator.py")
+    cmd = [sys.executable, helper, csv_file, "-o", output_file, "-Hs", str(addHs)]
     subprocess.run(cmd, check=True)
     gml_files = [os.path.join(output_file, f) for f in os.listdir(output_file) if f.endswith(".gml")]
     return [Graph.fromGMLFile(f) for f in gml_files]
@@ -158,62 +162,82 @@ def count_functional_groups(smiles: str) -> int:
 
     return total_fgs
 
+def _forward_worker(unique_precursors, conn, forward_rules):
+    """Runs in a forked child process — inherits `mod`/forward_rules via fork."""
+    try:
+        precursors_graphs = [Graph.fromSMILES(p) for p in unique_precursors]
+        dg_side = DG(
+            graphDatabase=precursors_graphs,
+            labelSettings=LabelSettings(LabelType.Term, LabelRelation.Unification),
+        )
+        strat_side = addSubset(*precursors_graphs) >> forward_rules
+        with dg_side.build() as builder:
+            builder.execute(strat_side)
 
-def calculate_side_reactions(precursors, rule_name, forward_rules, forward_reaction_cache):
+        reaction_names = [
+            list(e.rules)[0].name.lower() if e.rules else "UnknownRule"
+            for e in dg_side.edges
+        ]
+        conn.send(("ok", dg_side.numEdges, reaction_names))
+    except Exception as e:
+        conn.send(("error", str(e)))
+    finally:
+        conn.close()
+
+
+def calculate_side_reactions(precursors, rule_name, forward_rules, forward_reaction_cache, timeout_seconds=30):
     """
     Simulates forward reactions to calculate side-product penalties.
-    Ignores 'SN2_***_amine' side reactions if both NH and COOH are present.
+    Runs MOD in a subprocess so a hang can be forcibly killed (signal-based
+    timeouts don't work here: MOD is a C++ extension that never yields
+    control back to the Python interpreter loop while it's stuck).
     """
     precursor_key = tuple(sorted(precursors))
 
-    # 1. Return cached result if already calculated
     if precursor_key in forward_reaction_cache:
         return forward_reaction_cache[precursor_key]
 
     unique_precursors = set(precursors)
 
-    # 2. Build and execute the Derivation Graph
-    precursors_graphs = [Graph.fromSMILES(p) for p in unique_precursors]
-    dg_side = DG(graphDatabase=precursors_graphs)
-    strat_side = addSubset(*precursors_graphs) >> forward_rules
+    parent_conn, child_conn = mp.Pipe()
+    proc = mp.Process(target=_forward_worker, args=(unique_precursors, child_conn, forward_rules))
+    proc.start()
+    child_conn.close()  # parent doesn't need its copy of the child's end
 
-    with dg_side.build() as builder:
-        builder.execute(strat_side)
+    proc.join(timeout_seconds)
 
-    num_forward_reactions = dg_side.numEdges
+    if proc.is_alive():
+        print(f"⚠️ MØD forward check timed out (> {timeout_seconds}s) on {unique_precursors}. Killing worker.")
+        proc.terminate()      # SIGTERM first
+        proc.join(2)
+        if proc.is_alive():
+            proc.kill()        # SIGKILL if it ignored SIGTERM
+            proc.join()
+        num_forward_reactions = 1
+        side_reactions_names = [rule_name, "timeout_on_competing_reactions_manual_check_needed"]
 
-    # # 3. Check for structural patterns using RDKit
+    elif parent_conn.poll():
+        status, *payload = parent_conn.recv()
+        if status == "ok":
+            num_forward_reactions, side_reactions_names = payload
+        else:
+            print(f"⚠️ Error during forward check: {payload[0]}. Applying fallback.")
+            num_forward_reactions = 1
+            side_reactions_names = [rule_name, "execution_error_penalty"]
+    else:
+        # process died without sending anything (e.g. segfault inside MOD)
+        print(f"⚠️ MØD worker died unexpectedly on {unique_precursors}. Applying fallback.")
+        num_forward_reactions = 1
+        side_reactions_names = [rule_name, "execution_error_penalty"]
 
-    # Check for the protonation of AMINE by acid, which deactivates amine-sn2 (encoded in forward reactions now)
-    # AMINE_PATTERN = Chem.MolFromSmarts("[NX3;H1,H2;!$(NC=O)]")
-    # COOH_PATTERN = Chem.MolFromSmarts("C(=O)[OH]")
-    # mols = [m for p in unique_precursors if (m := Chem.MolFromSmiles(p))]
-    # has_both_patterns = any(m.HasSubstructMatch(AMINE_PATTERN) for m in mols) and \
-    #                     any(m.HasSubstructMatch(COOH_PATTERN) for m in mols)
-    #
-    # # 4. Filter out specific SN2 reactions if conditions are met
-    # if has_both_patterns:
-    #     for side_reaction in dg_side.edges:
-    #         for r in side_reaction.rules:
-    #             rn = r.name.lower()
-    #             if "sn2_" in rn and "_amine" in rn:
-    #                 num_forward_reactions -= 1
+    if "reductive_amination" in rule_name:
+        for side_rn in list(side_reactions_names):
+            if "reduction" in side_rn:
+                side_reactions_names.remove(side_rn)
+                num_forward_reactions -= 1
 
-    # For ester ammonolysis it is hard to control the equivalence (how many ester groups will be replaced if more than 1 exist)
-    if rule_name == 'ester_ammonolysis_hydroxylamine_inv':
-        for smiles in precursors:
-            mol = Chem.MolFromSmiles(smiles)
-            if mol:
-                # Count total ester groups dynamically
-                num_esters = len(mol.GetSubstructMatches(ESTER_PATTERN))
-
-                # The "Statistical Tax": If there is only 1 ester, penalty is 0.
-                # If there are 2 esters, penalty is 2.0. If 3 esters, 4.0.
-                if num_esters > 1:
-                    num_forward_reactions += num_esters - 1
-    # 5. Update cache and return
-    forward_reaction_cache[precursor_key] = num_forward_reactions
-    return num_forward_reactions
+    forward_reaction_cache[precursor_key] = (num_forward_reactions, side_reactions_names)
+    return forward_reaction_cache[precursor_key]
 
 
 def detect_unprotected_AA(unsolved_pool_smiles):
