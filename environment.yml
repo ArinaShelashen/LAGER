@@ -6,8 +6,11 @@ channels:
 dependencies:
   - graphviz=13.1.2
   - mod=1.0.0.7
+  - openbabel=3.1.1
   - python=3.10.19
-  - pandas>=2.0.0
+  - pandas=2.3.3
+  - pillow=12.1.1
+  - pip
   - pip:
       - rdkit==2025.9.5
 

@@ -15,12 +15,16 @@ If you need a more detailed guidance, please visit [Detailed Instruction for LAG
 - [Test Run](#test-run)
 - [Algorithm Description](#algorithm-description)
 - [Scripts overview](#overview-of-scripts)
+- [Data and Results from the Paper](#data-and-results-from-the-paper)
+- [How to Cite](#how-to-cite)
 ---
 ### About LAGER
 LAGER is an open-source framework for computer-assisted synthesis planning (CASP).
 
 **Original Paper**\
-TBA
+Preprint: [Efficient Customizable Synthesis Planning with Graph Grammars, with an application to Elastase B inhibitor candidates](https://chemrxiv.org/doi/full/10.26434/chemrxiv.15010079/v1) \
+(manuscript under review) \
+See [How to Cite](#how-to-cite)
 
 **Key Features**\
 🔸 **Graph-Grammar Core:** Built on double-pushout (DPO) graph-transformation reaction rules using the MØD engine.\
@@ -32,7 +36,7 @@ TBA
 🔹 **High Reliability:** Hand-coded reaction rules ensure rigorous chemical validity within the defined scope.
 
 **Limitations**\
-🔻 **Reaction Scope:** Limited to the size of the curating expert reaction rule set.\
+🔻 **Reaction Scope:** Limited to the size of the curated expert reaction rule set.\
 🔻 **Context-Insensitivity:** Current reaction rules do not fully evaluate structural environments outside the immediate reaction center.\
 🔻 **Synthesis Constraints:** Does not explicitly predict or optimize reaction conditions (e.g., catalysts, solvents, temperatures).
 
@@ -46,11 +50,13 @@ TBA
 
 **Input Files Required:**
 * A `.csv` of available reactants (must contain valid, canonicalized SMILES; column `smiles`).
-<br>**Example file:** `zinc_with_precursors_clean.csv`
+<br>**Example file:** `lab_reactants_clean.csv`
 * A `.csv` of expected side products (e.g., $H_2O$, $NH_4Cl$, $NaCl$ as SMILES; column `smiles`).
 <br>**Example file:** `side_products_clean.csv`
-* A folder containing valid MØD `.gml` graph grammar rules (for inversed reactions).
+* A folder containing valid MØD `.gml` graph grammar rules (for inverse reactions).
 <br>**Example folder:** `inv_rules`
+* A folder with the corresponding forward rules, used to detect competing side reactions.
+<br>**Example folder:** `forward_rules`
 ---
 ### Installation
 
@@ -104,14 +110,17 @@ python rs_a_star_branched.py \
   --rules inv_rules/ \
   --max-iters 50000 \
   --target "Clc1c(Cl)cc(NC(=O)CC(=O)NO)cc1" \
-  --h-weight 0.1
+  --h-weight 0.1 \
+  --num-pathways 3
 ```
 
 3. **Check the output**
 
 When a pathway is successfully found, the engine will generate 
-- `optimal_pathway.json` A structured, step-by-step record of the reactions and flask states; human and machine readable.
-- `pathway.png` Visualization of the generated retrosynthesis pathway.
+- `results/optimal_pathway_N.json` A structured, step-by-step record of the reactions and flask states; human and machine readable.
+- `results/pathway_N.png` Visualization of the generated retrosynthesis pathways.
+- `results/pathways_combined.png` All the N generated pathways merged together.
+(N = number of generated pathways `--num-pathways`)
 ---
 ## Algorithm Description
 ### The A* Heuristics 
@@ -140,10 +149,19 @@ operating under the assumption that a low structural complexity score serves as 
 This script allows for **convergent synthesis**.
 * **Algorithm:** State-based A* Search.
 * **Behavior:** Instead of tracking a single molecule, it tracks a "pool" of unsolved intermediates. If a reaction cleaves a molecule into two complex, non-buyable fragments, the algorithm will systematically synthesize *both* of them independently.
-* **Output:** A linear or, if possible, branched tree visualizing the independent assembly of the molecule's core components `pathway.png` and `optimal_pathway.json`.
+* **Output:** A linear or, if possible, branched tree visualizing the independent assembly of the molecule's core components `results\pathway_N.png`, `results\optimal_pathway_N.json`,and `results\pathways_combined.png`.
 * **Usage:**
   ```bash
-  python rs_a_star_branched.py --buyables all_precursors.csv --side-products side_products.csv --rules inv_rules --target "SMILES" --max-iters 50 --h-weight 0.1
+  python rs_a_star_branched.py --buyables lab_reactants_clean.csv --side-products side_products_clean.csv --rules inv_rules --target "SMILES" --max-iters 250 --h-weight 0.1 --num-pathways 3
+  ```
+  
+### Batch A* Search (`rs_a_star_batch.py`)
+Runs the A* search for every molecule in a `CSV` file and collects search statistics. This script was used for the benchmark in the paper.
+* **Input:** A `CSV` with a column `smiles` containing the target molecules.
+* **Output:** A copy of the input `CSV` with added columns per $w_h$ value (pathway found, number of pathways, iterations, time, f-scores, cache hit rates). With `--visualize`, the JSON and PNG of every pathway are saved to `results/LasBinhibitors_results/pathway_JSONs/<w_h>/` and `.../pathway_PNGs/<w_h>/`.
+* **Usage:**
+  ```bash
+  python rs_a_star_batch.py --buyables lab_reactants_clean.csv --side-products side_products_clean.csv --rules inv_rules --forward-rules forward_rules --input-csv targets.csv --output-csv astar_batch_results.csv --max-iters 500 --h-weight 0.5 --num-pathways 3 --visualize
   ```
 ### Exhaustive Tree Search (`rs.py`)
 This script performs a depth-limited exhaustive search, generating **all possible valid retrosynthetic pathways** up to a certain depth.
@@ -153,7 +171,7 @@ This script performs a depth-limited exhaustive search, generating **all possibl
 * **Best for:** Small molecules or highly constrained rule sets where exploring the entire chemical space is computationally feasible; rule testing.
 * **Usage:**
   ```bash
-  python rs.py --buyables all_precursors.csv --side-products side_products.csv --rules inv_rules --target "SMILES" --depth 3
+  python rs.py --buyables lab_reactants_clean.csv --side-products side_products_clean.csv --rules inv_rules --target "SMILES" --depth 3
   ```
 
 ### Data preparation (`data_prep/clean_molecules.py`)
@@ -165,7 +183,29 @@ The `smiles` column of the `CSV` file can be canonicalized and stripped of salts
 python data_prep/clean_molecules.py PATH_TO_YOUR_FILE/YOUR_FILENAME.csv -o YOUR_FILENAME_clean.csv
 ```
 ---
+## Data and Results from the Paper
+The folder `LasBinhibitors_results` contains the LasB inhibitor benchmark reported in the paper:
+* `LasB_inhibitors_results.csv` Target molecules, literature references and search statistics for each $w_h$ value.
+* `pathway_JSONs/` and `pathway_PNGs/` Pathways found for each $w_h$ value (subfolders `00`, `01`, `05`, `10` for $w_h$ = 0.0, 0.1, 0.5, 1.0), plus `literature_reported_pathways`.
 
+---
+## How to Cite
+If you use LAGER in your work, please cite:
+
+> Shelashen, A.; Gatter, T.; O'Donnell, C. R.; Vgenopoulou, A.; Hirsch, A. K. H.; Stadler, P. F. Efficient Customizable Synthesis Planning with Graph Grammars, with an Application to Elastase B Inhibitor Candidates. *ChemRxiv* **2026**. https://doi.org/10.26434/chemrxiv.15010079/v1
+
+```bibtex
+@article{shelashen2026lager,
+  author  = {Shelashen, Arina and Gatter, Thomas and O'Donnell, Charlotte R. and
+             Vgenopoulou, Angeliki and Hirsch, Anna K. H. and Stadler, Peter F.},
+  title   = {Efficient Customizable Synthesis Planning with Graph Grammars,
+             with an Application to Elastase B Inhibitor Candidates},
+  journal = {ChemRxiv},
+  year    = {2026},
+  doi     = {10.26434/chemrxiv.15010079/v1},
+  note    = {Preprint}
+}
+```
 ### 📄 References
 * **[1]** Andersen, J.L., Flamm, C., Merkle, D., Stadler, P.F. (2016). A Software Package for Chemically Inspired Graph Transformation. In: Echahed, R., Minas, M. (eds) Graph Transformation. ICGT 2016. Lecture Notes in Computer Science(), vol 9761. Springer, Cham. https://doi.org/10.1007/978-3-319-40530-8_5
 * **[2]** Ertl P, Schuffenhauer A. Estimation of synthetic accessibility score of drug-like molecules based on molecular complexity and fragment contributions. J Cheminform. 2009 Jun 10;1(1):8. doi: 10.1186/1758-2946-1-8. PMID: 20298526; PMCID: PMC3225829.

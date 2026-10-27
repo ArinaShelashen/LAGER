@@ -120,7 +120,8 @@ python rs_a_star_branched.py \
   --rules inv_rules/ \
   --max-iters 50000 \
   --target "Clc1c(Cl)cc(NC(=O)CC(=O)NO)cc1" \
-  --h-weight 0.1
+  --h-weight 0.1 \
+  --num-pathways 3
 ```
 Command Line Arguments:
 - **--buyables**: Path to your cleaned CSV of available starting materials.
@@ -129,11 +130,13 @@ Command Line Arguments:
 - **--max-iters**: Maximum number of search nodes to explore before giving up (prevents infinite loops on impossible molecules).
 - **--target**: The SMILES string of the molecule you want to synthesize.
 - **--h-weight**: The weight factor for the heuristic (SA Score).
+- **--num-pathways**: The number of synthesis pathways to be generated.
  
 ### 📊 Outputs
 When a pathway is successfully found, the engine will generate 
-- `optimal_pathway.json` A structured, step-by-step record of the reactions and flask states; human and machine readable.
-- `pathway.png` Visualization of the generated retrosynthesis pathway.
+- `results/optimal_pathway_N.json` A structured, step-by-step record of the reactions and flask states; human and machine readable.
+- `results/pathway_N.png` Visualization of the generated retrosynthesis pathway.
+- `results/pathways_combined.png` All the N generated pathways merged together.
 
 For WSL users:
 To see the output files:
