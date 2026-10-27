@@ -2,7 +2,7 @@
 # Starts LAGER in Docker and opens it in the browser (Linux and macOS).
 # Requirement: Docker is installed and running.
 
-IMAGE="lager"
+IMAGE="arinashelashen/lager:latest"
 PORT=5000
 
 if ! docker info >/dev/null 2>&1; then
@@ -16,6 +16,7 @@ fi
 docker rm -f lager >/dev/null 2>&1
 
 echo "Starting LAGER..."
+docker pull "$IMAGE" >/dev/null 2>&1 || true
 if ! docker run -d --rm --name lager -p "127.0.0.1:${PORT}:5000" "$IMAGE" >/dev/null; then
     echo "LAGER could not be started. Is the image \"$IMAGE\" available?"
     read -rp "Press Enter to close."
