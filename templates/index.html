@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LAGER Retrosynthesis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- JSME molecule editor, loaded from its official site -->
+  <script src="https://jsme-editor.github.io/dist/jsme/jsme.nocache.js"></script>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>LAGER</h1>
+      <p class="subtitle">Retrosynthesis with graph grammars and A* search</p>
+    </header>
+
+    <section class="card">
+      <h2>Target molecule</h2>
+      <p class="hint">Draw the molecule or paste a SMILES. Drawing fills in the SMILES automatically.</p>
+      <div id="editor"></div>
+      <label for="smiles">SMILES</label>
+      <input id="smiles" type="text" spellcheck="false"
+             placeholder="e.g. Clc1c(Cl)cc(NC(=O)CC(=O)NO)cc1">
+      <button id="run">Find pathways</button>
+      <p id="message" class="message" hidden></p>
+    </section>
+
+    <section id="progress" class="card" hidden>
+      <h2 id="status">Searching…</h2>
+      <pre id="log"></pre>
+    </section>
+
+    <section id="results" class="card" hidden>
+      <div class="results-head">
+        <h2>Pathways</h2>
+        <a id="zip" class="button secondary" href="#">Download all (ZIP)</a>
+      </div>
+      <div id="pathways"></div>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
