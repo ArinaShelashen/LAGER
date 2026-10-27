@@ -1,0 +1,3 @@
+# Fixed line endings for the start scripts
+*.sh  text eol=lf
+*.bat text eol=crlf

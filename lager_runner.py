@@ -40,11 +40,15 @@ def run_search(target_smiles: str, on_log=print) -> list[dict]:
     try:
         # The search script loads forward_rules/ from its working folder
         (run_dir / "forward_rules").symlink_to(FORWARD_RULES, target_is_directory=True)
+        # generate_graphs() writes a "<name>_graphs" folder next to the side-products
+        # CSV. A private copy keeps those files inside this run's folder, so parallel
+        # runs never write into the same place.
+        shutil.copy(SIDE_PRODUCTS, run_dir / SIDE_PRODUCTS.name)
 
         cmd = [
             sys.executable, str(SEARCH_SCRIPT),
             "--buyables", str(BUYABLES),
-            "--side-products", str(SIDE_PRODUCTS),
+            "--side-products", SIDE_PRODUCTS.name,
             "--rules", str(INV_RULES),
             "--target", target_smiles,
         ]
