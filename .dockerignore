@@ -1,0 +1,24 @@
+# Not needed inside the image – keeps it small and free of local files
+
+# Git and IDE files
+.git
+.gitignore
+.idea
+**/__pycache__
+**/*.pyc
+
+# Paper results and outputs of earlier runs
+LasBinhibitors_results
+results
+imgs
+*_graphs
+retrosynthesis_tree.json
+
+# Raw datasets (the GUI uses lab_reactants_clean.csv and side_products_clean.csv)
+data
+
+# Docker and start scripts themselves
+Dockerfile
+.dockerignore
+start_lager.bat
+start_lager.sh
