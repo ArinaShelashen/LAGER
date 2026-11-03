@@ -54,7 +54,8 @@ def generate_graphs(csv_file, addHs=True):
     """
     output_file = csv_file.replace(".csv", "_graphs")
     os.makedirs(output_file, exist_ok=True)
-    cmd = ["python", "mol_graphs_creator.py", csv_file, "-o", output_file, "-Hs", str(addHs)]
+    helper = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data_prep", "mol_graphs_creator.py")
+    cmd = [sys.executable, helper, csv_file, "-o", output_file, "-Hs", str(addHs)]
     subprocess.run(cmd, check=True)
     gml_files = [os.path.join(output_file, f) for f in os.listdir(output_file) if f.endswith(".gml")]
     return [Graph.fromGMLFile(f) for f in gml_files]

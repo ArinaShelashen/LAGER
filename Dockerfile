@@ -26,6 +26,16 @@ RUN micromamba install -y -n base -f /tmp/environment.yml \
 WORKDIR /app
 COPY --chown=$MAMBA_USER:$MAMBA_USER . /app
 
+# Reaction rules added through the web page are saved here. It is a volume, so
+# they survive restarts; mount a named volume or a folder here to also keep them
+# when the container is deleted (e.g. for an update):
+#   docker run -v lager_rules:/data/user_rules ...
+USER root
+RUN mkdir -p /data/user_rules && chown $MAMBA_USER:$MAMBA_USER /data/user_rules
+USER $MAMBA_USER
+ENV LAGER_USER_RULES=/data/user_rules
+VOLUME /data/user_rules
+
 EXPOSE 5000
 
 # One worker process, because running searches are kept in that process's memory;

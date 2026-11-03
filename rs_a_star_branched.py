@@ -325,7 +325,7 @@ def main():
     parser.add_argument("--side-products", required=True, help="CSV with side product SMILES")
     parser.add_argument("--rules", required=True, help="Folder with .gml rules")
     parser.add_argument("--target", required=True, help="Target SMILES")
-    parser.add_argument("--max-iters", type=int, default=60, help="Max A* iterations to prevent infinite loops")
+    parser.add_argument("--max-iters", type=int, default=200, help="Max A* iterations to prevent infinite loops")
     parser.add_argument("--h-weight", type=float, default=0.5, help="h(n) weight")
     args = parser.parse_args()
     start_time = time.perf_counter()

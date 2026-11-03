@@ -15,30 +15,169 @@
       <p class="subtitle">Retrosynthesis with graph grammars and A* search</p>
     </header>
 
-    <section class="card">
+    <nav class="tabs" role="tablist" aria-label="Steps">
+      <button role="tab" data-tab="target" id="tab-target" aria-controls="panel-target">
+        <span class="tab-number">1</span>
+        <span class="tab-text"><span class="tab-title"><span class="title-long">Target molecule</span><span class="title-short">Target</span></span>
+          <span class="tab-summary">not set</span></span>
+      </button>
+      <button role="tab" data-tab="reagents" id="tab-reagents" aria-controls="panel-reagents">
+        <span class="tab-number">2</span>
+        <span class="tab-text"><span class="tab-title"><span class="title-long">Starting materials</span><span class="title-short">Materials</span></span>
+          <span class="tab-summary">default · {{ default_count }}</span></span>
+      </button>
+      <button role="tab" data-tab="rules" id="tab-rules" aria-controls="rules-card">
+        <span class="tab-number">3</span>
+        <span class="tab-text"><span class="tab-title"><span class="title-long">Reaction rules</span><span class="title-short">Rules</span></span>
+          <span class="tab-summary">loading…</span></span>
+      </button>
+      <button role="tab" data-tab="results" id="tab-results" aria-controls="panel-results">
+        <span class="tab-number">4</span>
+        <span class="tab-text"><span class="tab-title"><span class="title-long">Results</span><span class="title-short">Results</span></span>
+          <span class="tab-summary">no search yet</span></span>
+      </button>
+    </nav>
+
+    <section class="card" data-panel="target" id="panel-target" role="tabpanel" aria-labelledby="tab-target">
       <h2>Target molecule</h2>
       <p class="hint">Draw the molecule or paste a SMILES. Drawing fills in the SMILES automatically.</p>
       <div id="editor"></div>
       <label for="smiles">SMILES</label>
       <input id="smiles" type="text" spellcheck="false"
              placeholder="e.g. Clc1c(Cl)cc(NC(=O)CC(=O)NO)cc1">
-      <button id="run">Find pathways</button>
-      <p id="message" class="message" hidden></p>
-    </section>
-
-    <section id="progress" class="card" hidden>
-      <h2 id="status">Searching…</h2>
-      <pre id="log"></pre>
-    </section>
-
-    <section id="results" class="card" hidden>
-      <div class="results-head">
-        <h2>Pathways</h2>
-        <a id="zip" class="button secondary" href="#">Download all (ZIP)</a>
+      <div class="step-footer">
+        <button class="button secondary" data-goto="reagents">Next: Starting materials →</button>
       </div>
-      <div id="pathways"></div>
     </section>
+
+    <section class="card" data-panel="reagents" id="panel-reagents" role="tabpanel" aria-labelledby="tab-reagents">
+      <h2>Available starting materials</h2>
+      <p id="reactants-status" class="status-line"
+         data-default-name="{{ default_name }}" data-default-count="{{ default_count }}">
+        Using the default list <strong>{{ default_name }}</strong> ({{ default_count }} molecules).
+      </p>
+      <div id="reactants-report" hidden></div>
+      <p id="reactants-error" class="message error" hidden></p>
+
+      <p class="hint">
+        To use your own reagents, upload one or more files: <strong>.csv</strong> with a column
+        <code>smiles</code>, or <strong>.sdf</strong> (e.g. exported from your chemical inventory).
+        Several files are combined. Salts, stereochemistry and duplicates are removed automatically.
+      </p>
+      <p class="hint">
+        SDF entries without a readable structure are looked up on <strong>PubChem</strong>
+        by their CAS number or name. Only these names and CAS numbers are sent to PubChem,
+        never your target molecule.
+      </p>
+      <div class="actions">
+        <label class="button secondary" for="reactants-file">Upload reagents…</label>
+        <input id="reactants-file" type="file" accept=".csv,.sdf,.sd" multiple hidden>
+        <button id="reactants-reset" class="link-button" hidden>Use the default list again</button>
+      </div>
+      <div class="step-footer">
+        <button class="button secondary" data-goto="rules">Next: Reaction rules →</button>
+      </div>
+    </section>
+
+    <section class="card" id="rules-card" data-panel="rules" role="tabpanel" aria-labelledby="tab-rules">
+      <h2>Reaction rules</h2>
+      <p id="rules-status" class="status-line">Loading reaction rules…</p>
+      <p class="hint">Untick the reactions you don't want in your synthesis. Click a name to see the rule.</p>
+      <div class="rules-toolbar">
+        <input id="rules-filter" type="search" placeholder="Search rules…" aria-label="Search rules">
+        <button id="rules-all" class="link-button">Select all</button>
+        <button id="rules-none" class="link-button">Select none</button>
+      </div>
+      <ul id="rules-list" class="rules-list"></ul>
+      <div id="rule-detail" class="rule-detail" hidden></div>
+
+      <details id="rule-add" class="rule-add">
+        <summary>Add your own reaction rule</summary>
+        <p class="hint">
+          Write the <strong>forward reaction</strong> in MØD's GML format, including its conditions
+          (<code>constrainAdj</code>, …): <em>left</em> = reactants, <em>right</em> = products.
+          LAGER then creates the <strong>retrosynthetic rule</strong> used by the search. Please check
+          it before saving. Saved rules are available to everyone using this LAGER installation.
+        </p>
+        <div class="form-grid">
+          <label>Name<input id="rule-name" type="text" placeholder="e.g. Ester_hydrolysis" maxlength="80"></label>
+          <label>Your name<input id="rule-author" type="text" maxlength="100"></label>
+        </div>
+        <p class="hint small">
+          Names containing <code>protection</code> or <code>deprotection</code> are treated as cheap
+          helper steps in the search, like the existing protection rules.
+        </p>
+        <label>Description (optional)<input id="rule-description" type="text" maxlength="1000"></label>
+
+        <div class="rule-step">
+          <h3><span class="step-number">1</span> Forward reaction</h3>
+          <textarea id="rule-forward" rows="12" spellcheck="false" placeholder='rule [
+	labelType "term"
+	left [ … ]
+	context [ … ]
+	right [ … ]
+	constrainAdj [ … ]
+]'></textarea>
+          <div class="actions">
+            <label class="button secondary" for="rule-file">Load .gml file…</label>
+            <input id="rule-file" type="file" accept=".gml,.txt" hidden>
+            <button id="rule-turn">Create retrosynthetic rule</button>
+          </div>
+          <p id="forward-message" class="message" hidden></p>
+          <div id="forward-preview"></div>
+        </div>
+
+        <div class="rule-step" id="inverse-step" hidden>
+          <h3><span class="step-number">2</span> Retrosynthetic rule – please check</h3>
+          <div id="inverse-report"></div>
+          <textarea id="rule-inverse" rows="12" spellcheck="false"></textarea>
+          <div id="inverse-preview"></div>
+          <label class="check-line">
+            <input id="rule-approved" type="checkbox">
+            I checked the retrosynthetic rule and its conditions.
+          </label>
+          <div class="actions">
+            <button id="rule-check" class="button secondary">Check both with MØD</button>
+            <button id="rule-save" disabled>Save rule</button>
+          </div>
+        </div>
+        <p id="rule-message" class="message" hidden></p>
+      </details>
+    </section>
+
+    <div data-panel="results" id="panel-results" role="tabpanel" aria-labelledby="tab-results">
+      <section id="results-empty" class="card">
+        <h2>Results</h2>
+        <p id="results-empty-text" class="hint">No search yet. Choose a target molecule in step 1 and click
+          <strong>Find pathways</strong>.</p>
+      </section>
+
+      <section id="progress" class="card" hidden>
+        <h2 id="status">Searching…</h2>
+        <pre id="log"></pre>
+      </section>
+
+      <section id="results" class="card" hidden>
+        <div class="results-head">
+          <h2>Pathways</h2>
+          <a id="zip" class="button secondary" href="#">Download all (ZIP)</a>
+        </div>
+        <div id="pathways"></div>
+      </section>
+    </div>
   </main>
+
+  <!-- Always visible: what will be searched, and the button to start -->
+  <div class="run-bar">
+    <div class="run-bar-inner">
+      <p id="run-summary" class="run-summary">Target: <strong>not set</strong></p>
+      <p id="message" class="message" hidden></p>
+      <button id="run">Find pathways</button>
+    </div>
+  </div>
+  <script src="{{ url_for('static', filename='tabs.js') }}"></script>
+  <script src="{{ url_for('static', filename='ruleview.js') }}"></script>
+  <script src="{{ url_for('static', filename='rules.js') }}"></script>
   <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

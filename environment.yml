@@ -12,6 +12,8 @@ dependencies:
   - pillow=12.1.1
   - flask
   - gunicorn
+  - tqdm
+  - pubchempy
   - pip
   - pip:
       - rdkit==2025.9.5

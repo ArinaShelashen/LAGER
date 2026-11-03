@@ -29,27 +29,55 @@ class SearchTimeout(Exception):
     pass
 
 
-def run_search(target_smiles: str, on_log=print) -> list[dict]:
+def run_search(target_smiles: str, on_log=print, buyables_csv: bytes | None = None,
+               rule_files: list[Path] | None = None,
+               forward_files: list[Path] | None = None) -> list[dict]:
     """
     Run the A* search for one target.
     on_log(line) is called for every line the script prints.
+    buyables_csv: the user's cleaned reactants list (CSV content);
+    None = use the default list.
+    rule_files: the retrosynthetic rules to use (.gml files); None = all default rules.
+    forward_files: forward rules for the side-reaction check; None = all default ones.
     Returns a list of pathways: [{"json": str, "png": bytes | None}, ...]
     (empty list = no pathway found). The temporary folder is always deleted.
     """
     run_dir = Path(tempfile.mkdtemp(prefix="lager_run_"))
     try:
-        # The search script loads forward_rules/ from its working folder
-        (run_dir / "forward_rules").symlink_to(FORWARD_RULES, target_is_directory=True)
+        # The search script loads forward_rules/ from its working folder.
+        # Forward rules are always ALL rules (including ones the user switched off):
+        # a reaction the user does not want to use can still happen as a side reaction.
+        forward_dir = run_dir / "forward_rules"
+        forward_dir.mkdir()
+        for path in forward_files if forward_files is not None else sorted(FORWARD_RULES.glob("*.gml")):
+            (forward_dir / path.name).symlink_to(path.resolve())
+
+        # The selected retrosynthetic rules, as links in this run's own folder
+        if rule_files is not None:
+            if not rule_files:
+                raise ValueError("No reaction rules selected.")
+            rules_dir = run_dir / "inv_rules"
+            rules_dir.mkdir()
+            for path in rule_files:
+                (rules_dir / path.name).symlink_to(path.resolve())
+        else:
+            rules_dir = INV_RULES
         # generate_graphs() writes a "<name>_graphs" folder next to the side-products
         # CSV. A private copy keeps those files inside this run's folder, so parallel
         # runs never write into the same place.
         shutil.copy(SIDE_PRODUCTS, run_dir / SIDE_PRODUCTS.name)
 
+        if buyables_csv is not None:
+            buyables = run_dir / "user_reactants.csv"
+            buyables.write_bytes(buyables_csv)
+        else:
+            buyables = BUYABLES
+
         cmd = [
             sys.executable, str(SEARCH_SCRIPT),
-            "--buyables", str(BUYABLES),
+            "--buyables", str(buyables),
             "--side-products", SIDE_PRODUCTS.name,
-            "--rules", str(INV_RULES),
+            "--rules", str(rules_dir),
             "--target", target_smiles,
         ]
         env = dict(os.environ, PYTHONUNBUFFERED="1")  # print() lines arrive immediately

@@ -22,3 +22,6 @@ Dockerfile
 .dockerignore
 start_lager.bat
 start_lager.sh
+
+# Rules added through the web page (they live in a Docker volume)
+user_rules
