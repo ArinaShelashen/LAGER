@@ -12,7 +12,7 @@
   const names = tabs.map((t) => t.dataset.tab);
 
   function show(name, focus) {
-    if (!names.includes(name)) name = names[0];
+    if (!names.includes(name)) name = "target";
     for (const tab of tabs) {
       const active = tab.dataset.tab === name;
       tab.setAttribute("aria-selected", active);
@@ -54,6 +54,7 @@
     });
   }
 
-  show(location.hash.slice(1));
+  // Start at step 1 unless the address names a tab (e.g. #guide)
+  show(names.includes(location.hash.slice(1)) ? location.hash.slice(1) : "target");
   window.LagerTabs = { show, setSummary };
 })();

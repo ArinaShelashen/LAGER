@@ -33,6 +33,7 @@ from rdkit import Chem
 import os
 
 import rules
+from depict import molecule_svg as depict_molecule
 from lager_runner import BUYABLES, SearchTimeout, run_search
 from reactants import ReactantsError, count_molecules, prepare_reactants
 
@@ -167,6 +168,24 @@ def download_reactants(reactants_id):
         abort(404)
     return send_file(io.BytesIO(entry["csv"]), mimetype="text/csv",
                      download_name="reactants_clean.csv", as_attachment=True)
+
+
+# ---------------------------------------------------------------------------
+# Molecule pictures (rule guide)
+# ---------------------------------------------------------------------------
+@app.get("/api/depict")
+def depict():
+    smiles = request.args.get("smiles", "")
+    try:
+        centre = tuple(sorted(int(x) for x in request.args.get("centre", "").split(",") if x.strip()))
+    except ValueError:
+        centre = ()
+    svg = depict_molecule(smiles, centre)
+    if svg is None:
+        abort(400)
+    response = app.response_class(svg, mimetype="image/svg+xml")
+    response.headers["Cache-Control"] = "public, max-age=86400"
+    return response
 
 
 # ---------------------------------------------------------------------------

@@ -90,8 +90,8 @@ Without an internet connection, the version already on your computer is used.
 The start script only runs these commands, which you can also use directly:
 
 ```bash
-docker pull USERNAME/lager:latest
-docker run --rm --name lager -p 127.0.0.1:5000:5000 -v lager_rules:/data/user_rules USERNAME/lager:latest
+docker pull arinashelashen/lager:latest
+docker run --rm --name lager -p 127.0.0.1:5000:5000 -v lager_rules:/data/user_rules arinashelashen/lager:latest
 ```
 
 Then open http://localhost:5000. Stop LAGER with **Ctrl+C**.
@@ -108,4 +108,4 @@ Then open http://localhost:5000. Stop LAGER with **Ctrl+C**.
 | The browser page does not load | Wait a few seconds and reload. On the first start, wait until the download has finished. |
 | "No pathway found" | LAGER could not build the molecule from the available starting materials and reactions with the standard settings. Try a related or simpler structure. |
 
-**Questions or problems?** Contact Arina Shelashen (arina@bioinf.uni-leipzig.de).
+**Questions or problems?** Contact Arina Shelashen (arishashelashen@gmail.com).

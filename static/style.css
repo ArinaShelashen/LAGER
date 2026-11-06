@@ -264,3 +264,26 @@ body { padding-bottom: 84px; }
   .title-long { display: none; }
   .title-short { display: inline; }
 }
+
+/* Tab 0: rule guide */
+.tabs { grid-template-columns: repeat(5, 1fr); }
+@media (max-width: 720px) { .tabs { grid-template-columns: 1fr 1fr; } }
+.guide h3 { margin: 18px 0 6px; font-size: 1rem; }
+.example-number {
+  display: inline-block; font-size: 0.75rem; font-weight: 600; color: var(--accent);
+  border: 1px solid var(--accent); border-radius: 999px; padding: 1px 8px; margin-right: 6px; vertical-align: 2px;
+}
+.reaction { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; margin: 12px 0 4px; }
+.reaction .mol { width: 150px; max-width: 100%; height: auto; }
+.reaction-sign, .reaction-arrow { font-size: 1.4rem; color: var(--muted); padding: 0; }
+.reaction-legend { font-size: 0.85rem; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; margin: 0 0 8px; }
+.swatch { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: -2px; margin-right: 4px; }
+.swatch-centre { background: rgb(255, 194, 115); }
+.swatch-context { background: rgb(184, 214, 255); }
+.guide-rule { margin: 8px 0 4px; }
+.guide-rule summary { cursor: pointer; color: var(--accent); font-size: 0.95rem; }
+.guide-text p { margin: 0 0 8px; }
+.placeholder { color: var(--muted); font-style: italic; }
+.hint .link-button { font-size: inherit; }
+
+@media (max-width: 1000px) { .title-long { display: none; } .title-short { display: inline; } }

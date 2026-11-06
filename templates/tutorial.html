@@ -1,0 +1,90 @@
+{# Tab 0: rule guide with example rules.
+   Pictures: atom-map numbers in the SMILES = atom ids of the rule (checked against the GML files).
+   centre = atoms whose bonds change in the rule (drawn orange); other numbered atoms = context (blue).
+   Write your texts into the <div class="guide-text"> blocks (plain HTML: <p>, <ul><li>, <strong>, <code>). #}
+
+{% macro molecule(smiles, centre) -%}
+  <img class="mol" alt="{{ smiles }}" loading="lazy"
+       src="{{ url_for('depict', smiles=smiles, centre=centre) }}">
+{%- endmacro %}
+
+{% macro reaction(reactants, products, centre) -%}
+  <div class="reaction">
+    {% for smiles in reactants %}
+      {% if not loop.first %}<span class="reaction-sign">+</span>{% endif %}
+      {{ molecule(smiles, centre) }}
+    {% endfor %}
+    <span class="reaction-arrow">→</span>
+    {% for smiles in products %}
+      {% if not loop.first %}<span class="reaction-sign">+</span>{% endif %}
+      {{ molecule(smiles, centre) }}
+    {% endfor %}
+  </div>
+  <p class="reaction-legend">
+    <span class="swatch swatch-centre"></span> bonds change
+    <span class="swatch swatch-context"></span> unchanged rule atoms
+    <span class="legend-numbers">small numbers = atom ids in the rule</span>
+  </p>
+{%- endmacro %}
+
+{% macro rule_block(rule_id) -%}
+  <details class="guide-rule" data-rule-id="{{ rule_id }}">
+    <summary>Show the rule ({{ rule_id }}.gml)</summary>
+    <div class="guide-rule-view"></div>
+  </details>
+{%- endmacro %}
+
+<section class="card guide">
+  <h2>How reaction rules work</h2>
+  <div class="guide-text">
+    <!-- Your introduction here -->
+    <p class="placeholder">Introduction – to be written.</p>
+  </div>
+</section>
+
+{% macro example_head(number, title, rule_id, reactants, products, centre) -%}
+  <h2><span class="example-number">Example {{ number }}</span> {{ title }}</h2>
+  {{ reaction(reactants, products, centre) }}
+  {{ rule_block(rule_id) }}
+{%- endmacro %}
+
+{% macro placeholder() -%}<p class="placeholder">To be written.</p>{%- endmacro %}
+
+<!-- Example 1 --------------------------------------------------------------- -->
+<section class="card guide" id="guide-amide">
+  {{ example_head(1, "Amide coupling", "amide_coupling_inv",
+       ["[2H:6][O:2][C:1](=[O:5])c1ccccc1", "[H:4][NH:3][CH2:7]c1ccccc1"],
+       ["[O:5]=[C:1](c1ccccc1)[NH:3][CH2:7]c1ccccc1", "[H:4][O:2][2H:6]"], "1,2,3,4") }}
+  <h3>Reaction centre</h3>
+  <div class="guide-text">{{ placeholder() }}</div>
+  <h3>Context</h3>
+  <div class="guide-text">{{ placeholder() }}</div>
+  <h3>Conditions</h3>
+  <div class="guide-text">{{ placeholder() }}</div>
+</section>
+
+<!-- Example 2 --------------------------------------------------------------- -->
+<section class="card guide" id="guide-grignard">
+  {{ example_head(2, "Grignard reaction", "Grignard_keto_aldeh_inv",
+       ["[H:1][C:2](=[O:3])[c:7]1ccccc1", "C[CH2:6][Mg:5][Br:4]", "[H:8][O:9][H:10]"],
+       ["[H:1][C:2]([O:3][H:8])([CH2:6]C)[c:7]1ccccc1", "[H:10][O:9][Mg:5][Br:4]"], "2,3,5,6,8,9") }}
+  <h3>Reaction centre</h3>
+  <div class="guide-text">{{ placeholder() }}</div>
+  <h3>Context</h3>
+  <div class="guide-text">{{ placeholder() }}</div>
+  <h3>Conditions</h3>
+  <div class="guide-text">{{ placeholder() }}</div>
+</section>
+
+<!-- Example 3 --------------------------------------------------------------- -->
+<section class="card guide" id="guide-arbuzov">
+  {{ example_head(3, "Michaelis–Arbuzov reaction", "Arbuzov_dialkylalkylphosphonites_Br_inv",
+       ["C[CH2:13][O:12][P:9]([O:10][CH2:11]C)[c:14]1ccccc1", "[Br:3][CH2:1]c1ccccc1"],
+       ["C[CH2:13][O:12][P:9](=[O:10])([CH2:1]c1ccccc1)[c:14]1ccccc1", "C[CH2:11][Br:3]"], "1,3,9,10,11") }}
+  <h3>Reaction centre</h3>
+  <div class="guide-text">{{ placeholder() }}</div>
+  <h3>Context</h3>
+  <div class="guide-text">{{ placeholder() }}</div>
+  <h3>Conditions</h3>
+  <div class="guide-text">{{ placeholder() }}</div>
+</section>

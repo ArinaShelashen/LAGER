@@ -36,10 +36,10 @@ After that, starting LAGER takes three clicks (Step 3).
 ## Step 2: Download LAGER (once)
 
 1. In File Explorer, create an empty folder for LAGER's reaction rules, e.g. `C:\Users\YOUR-NAME\LAGER_rules`.
-2. In Docker Desktop, click the **search bar at the top** and type `USERNAME/lager`.
-3. Click **Pull** next to `USERNAME/lager`.
+2. In Docker Desktop, click the **search bar at the top** and type `arinashelashen/lager`.
+3. Click **Pull** next to `arinashelashen/lager`.
    LAGER is downloaded (a few GB). This takes several minutes.
-4. Go to **Images** (left menu). Find `USERNAME/lager` and click the **Run** button (▶).
+4. Go to **Images** (left menu). Find `arinashelashen/lager` and click the **Run** button (▶).
 5. In the window that opens, click **Optional settings** and enter:
    - **Container name:** `lager`
    - **Host port:** `5000`
@@ -95,7 +95,7 @@ Your browser opens LAGER (http://localhost:5000). If the page does not load yet,
 When you are told that a new LAGER version is available:
 
 1. **Containers:** stop `lager` (■), then delete it (🗑).
-2. **Images:** find `USERNAME/lager`, open the **⋮** menu and choose **Pull**.
+2. **Images:** find `arinashelashen/lager`, open the **⋮** menu and choose **Pull**.
 3. Start it again as in **Step 2, points 4–6**, with the same rules folder. Your added rules are still there.
 
 ---
@@ -106,9 +106,9 @@ When you are told that a new LAGER version is available:
 |---|---|
 | Docker Desktop: "Virtualization support not detected" | Virtualization must be enabled in the computer's BIOS. Ask your IT department. |
 | Docker Desktop: "You are not allowed to use Docker" | Your account is not in the **docker-users** group. Ask your IT department (see Step 1). |
-| `USERNAME/lager` is not found in the search | Check the spelling. Make sure you are connected to the internet. |
+| `arinashelashen/lager` is not found in the search | Check the spelling. Make sure you are connected to the internet. |
 | "Port is already allocated" when clicking Run | Another program uses port 5000. Repeat Step 2, points 4–6, with **Host port** `5001`, and open http://localhost:5001 |
 | The browser page does not load | Check in **Containers** that `lager` is running (green). Wait a few seconds and refresh (F5). |
 | "No pathway found" | LAGER could not build the molecule from the available starting materials and reactions with the standard settings. Try a related or simpler structure. |
 
-**Questions or problems?** Contact Arina Shelashen (arina@bioinf.uni-leipzig.de).
+**Questions or problems?** Contact Arina Shelashen (arishashelashen@gmail.com).

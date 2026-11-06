@@ -16,6 +16,11 @@
     </header>
 
     <nav class="tabs" role="tablist" aria-label="Steps">
+      <button role="tab" data-tab="guide" id="tab-guide" aria-controls="panel-guide">
+        <span class="tab-number">0</span>
+        <span class="tab-text"><span class="tab-title"><span class="title-long">Rule guide</span><span class="title-short">Guide</span></span>
+          <span class="tab-summary">3 examples</span></span>
+      </button>
       <button role="tab" data-tab="target" id="tab-target" aria-controls="panel-target">
         <span class="tab-number">1</span>
         <span class="tab-text"><span class="tab-title"><span class="title-long">Target molecule</span><span class="title-short">Target</span></span>
@@ -37,6 +42,10 @@
           <span class="tab-summary">no search yet</span></span>
       </button>
     </nav>
+
+    <div data-panel="guide" id="panel-guide" role="tabpanel" aria-labelledby="tab-guide">
+      {% include "tutorial.html" %}
+    </div>
 
     <section class="card" data-panel="target" id="panel-target" role="tabpanel" aria-labelledby="tab-target">
       <h2>Target molecule</h2>
@@ -82,7 +91,8 @@
     <section class="card" id="rules-card" data-panel="rules" role="tabpanel" aria-labelledby="tab-rules">
       <h2>Reaction rules</h2>
       <p id="rules-status" class="status-line">Loading reaction rules…</p>
-      <p class="hint">Untick the reactions you don't want in your synthesis. Click a name to see the rule.</p>
+      <p class="hint">Untick the reactions you don't want in your synthesis. Click a name to see the rule.
+        New to writing rules? See the <button class="link-button" data-goto="guide">rule guide (tab 0)</button>.</p>
       <div class="rules-toolbar">
         <input id="rules-filter" type="search" placeholder="Search rules…" aria-label="Search rules">
         <button id="rules-all" class="link-button">Select all</button>
@@ -179,5 +189,6 @@
   <script src="{{ url_for('static', filename='ruleview.js') }}"></script>
   <script src="{{ url_for('static', filename='rules.js') }}"></script>
   <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <script src="{{ url_for('static', filename='guide.js') }}"></script>
 </body>
 </html>
