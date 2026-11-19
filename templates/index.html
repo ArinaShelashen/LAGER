@@ -71,7 +71,7 @@
 
     <section class="card" data-panel="reagents" id="panel-reagents" role="tabpanel" aria-labelledby="tab-reagents">
       <h2>Available starting materials</h2>
-      <fieldset id="default-lists" class="default-lists">
+      <fieldset id="default-lists" class="default-lists" {% if default_lists | length < 2 %}hidden{% endif %}>
         <legend>Default lists</legend>
         {% for key, name, text, count in default_lists %}
         <label><input type="radio" name="default-list" value="{{ key }}"
@@ -241,6 +241,19 @@
         <div id="pathways"></div>
       </section>
     </div>
+
+    <footer class="credits">
+      LAGER is open source (Apache-2.0). It is built on
+      <a href="https://github.com/jakobandersen/mod" target="_blank" rel="noopener">MØD</a> (GPL-3.0),
+      <a href="https://www.rdkit.org" target="_blank" rel="noopener">RDKit</a>,
+      <a href="https://github.com/TieuLongPhan/SynKit" target="_blank" rel="noopener">SynKit</a>,
+      <a href="https://github.com/TieuLongPhan/SynRBL" target="_blank" rel="noopener">SynRBL</a>,
+      <a href="https://jsme-editor.github.io" target="_blank" rel="noopener">JSME</a>,
+      <a href="https://graphviz.org" target="_blank" rel="noopener">Graphviz</a>,
+      <a href="https://openbabel.org" target="_blank" rel="noopener">Open Babel</a> (GPL-2.0) and
+      <a href="https://pubchem.ncbi.nlm.nih.gov" target="_blank" rel="noopener">PubChem</a>.
+      <a href="https://github.com/ArinaShelashen/LAGER#credits-and-licences" target="_blank" rel="noopener">Credits, references and licences</a>
+    </footer>
   </main>
 
   <!-- Always visible: what will be searched, and the button to start -->

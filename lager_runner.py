@@ -20,8 +20,9 @@ SEARCH_SCRIPT = REPO / "rs_a_star_branched.py"
 # Defaults – change these if you want other standard inputs
 # Default lists of starting materials: key -> (name on the web page, description, file)
 DEFAULT_REACTANTS = {
-    "small": ("Small inventory", "a subsample of the extended inventory", REPO / "small_inventory.csv"),
-    "extended": ("Extended inventory", "building blocks from MolPort", REPO / "extended_inventory.csv"),
+    "small": ("Small inventory", "building blocks", REPO / "small_inventory.csv"),
+    # More lists can be added here; the page shows a choice when there is more than one, e.g.
+    # "extended": ("Extended inventory", "more building blocks", REPO / "extended_inventory.csv"),
 }
 BUYABLES = DEFAULT_REACTANTS["small"][2]
 SIDE_PRODUCTS = REPO / "side_products_clean.csv"

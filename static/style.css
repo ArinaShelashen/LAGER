@@ -352,3 +352,7 @@ body { padding-bottom: 84px; }
 .default-lists legend { font-weight: 600; margin-bottom: 0.3rem; padding: 0; }
 .default-lists label { display: block; margin: 0.25rem 0; cursor: pointer; font-weight: normal; }
 .default-lists input { margin-right: 0.4rem; }
+
+/* Credits line at the end of the page */
+.credits { margin: 32px 0 8px; color: var(--muted); font-size: 0.85rem; line-height: 1.5; }
+.credits a { color: inherit; }

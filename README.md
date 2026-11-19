@@ -15,6 +15,7 @@ If you need a more detailed guidance, please visit [Detailed Instruction for LAG
 - [Test Run](#test-run)
 - [Algorithm Description](#algorithm-description)
 - [Scripts overview](#overview-of-scripts)
+- [Credits and licences](#credits-and-licences)
 ---
 ### About LAGER
 LAGER is an open-source framework for computer-assisted synthesis planning (CASP).
@@ -166,6 +167,32 @@ python data_prep/clean_molecules.py PATH_TO_YOUR_FILE/YOUR_FILENAME.csv -o YOUR_
 ```
 ---
 
+---
+
+### Credits and licences
+LAGER itself is licensed under the Apache License 2.0 (see `LICENSE`). It uses the following
+open-source software and data. Please cite the corresponding papers when you use LAGER.
+
+| Software / data | Used for | Licence |
+|---|---|---|
+| [MØD](https://github.com/jakobandersen/mod) [1] | graph-grammar rules and their application | GPL-3.0 |
+| [RDKit](https://www.rdkit.org) [3] | reading, cleaning and drawing molecules, SAscore [2] | BSD-3-Clause |
+| [SynKit](https://github.com/TieuLongPhan/SynKit) | atom mapping and rules from example reactions (web page) | MIT |
+| [SynRBL](https://github.com/TieuLongPhan/SynRBL) [4] | balancing example reactions (web page) | MIT |
+| [JSME](https://jsme-editor.github.io) [5] | molecule editor on the web page (`static/jsme/`, licence included) | BSD-3-Clause |
+| [Graphviz](https://graphviz.org) | pathway pictures | EPL-1.0 |
+| [Open Babel](https://openbabel.org) [6] | required by MØD | GPL-2.0 |
+| Flask, gunicorn, pandas, Pillow, pubchempy, tqdm | web server and data handling | BSD / MIT / HPND / MPL-2.0 |
+| [PubChem](https://pubchem.ncbi.nlm.nih.gov) | looking up SDF entries without a structure (web page) | public data, [usage policy](https://www.ncbi.nlm.nih.gov/home/about/policies/) |
+
+**Docker image.** The image `arinashelashen/lager` contains the packages above unmodified, installed
+from conda-forge, the `jakobandersen` conda channel and PyPI (see `environment.yml`). The source code
+of the GPL-licensed packages (MØD, Open Babel) is available from their project pages linked above.
+
 ### 📄 References
 * **[1]** Andersen, J.L., Flamm, C., Merkle, D., Stadler, P.F. (2016). A Software Package for Chemically Inspired Graph Transformation. In: Echahed, R., Minas, M. (eds) Graph Transformation. ICGT 2016. Lecture Notes in Computer Science(), vol 9761. Springer, Cham. https://doi.org/10.1007/978-3-319-40530-8_5
 * **[2]** Ertl P, Schuffenhauer A. Estimation of synthetic accessibility score of drug-like molecules based on molecular complexity and fragment contributions. J Cheminform. 2009 Jun 10;1(1):8. doi: 10.1186/1758-2946-1-8. PMID: 20298526; PMCID: PMC3225829.
+* **[3]** RDKit: Open-source cheminformatics. https://www.rdkit.org, https://doi.org/10.5281/zenodo.591637
+* **[4]** Phan, T.-L., Weinbauer, K., Gärtner, T., Merkle, D., Andersen, J.L., Fagerberg, R., Stadler, P.F. (2024). Reaction rebalancing: a novel approach to curating reaction databases. J Cheminform 16, 82. https://doi.org/10.1186/s13321-024-00875-1
+* **[5]** Bienfait, B., Ertl, P. (2013). JSME: a free molecule editor in JavaScript. J Cheminform 5, 24. https://doi.org/10.1186/1758-2946-5-24
+* **[6]** O'Boyle, N.M., Banck, M., James, C.A., Morley, C., Vandermeersch, T., Hutchison, G.R. (2011). Open Babel: An open chemical toolbox. J Cheminform 3, 33. https://doi.org/10.1186/1758-2946-3-33

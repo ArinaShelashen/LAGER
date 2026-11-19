@@ -208,7 +208,7 @@ def main():
 
         # 3. Starting materials
         b.js("LagerTabs.show('reagents')")
-        panel_shot(b, "#panel-reagents", [(1, "#default-lists", "left"),
+        panel_shot(b, "#panel-reagents", [(1, "#reactants-status", "left"),
                                          (2, "label[for='reactants-file']", "left")], "materials.png")
 
         # 4. Reaction rules: open a folder and show one rule
