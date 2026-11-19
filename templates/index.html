@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LAGER Retrosynthesis</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <!-- JSME molecule editor, loaded from its official site -->
-  <script src="https://jsme-editor.github.io/dist/jsme/jsme.nocache.js"></script>
+  <!-- JSME molecule editor 2024.04.29 (npm package jsme-editor, BSD licence: static/jsme/license.txt),
+       served by LAGER itself so the page does not depend on another website -->
+  <script src="{{ url_for('static', filename='jsme/jsme.nocache.js') }}"></script>
 </head>
 <body>
   <main>
@@ -16,8 +17,13 @@
     </header>
 
     <nav class="tabs" role="tablist" aria-label="Steps">
+      <button role="tab" data-tab="tutorial" id="tab-tutorial" aria-controls="panel-tutorial">
+        <span class="tab-number">0a</span>
+        <span class="tab-text"><span class="tab-title"><span class="title-long">Tutorial</span><span class="title-short">Tutorial</span></span>
+          <span class="tab-summary">how to use LAGER</span></span>
+      </button>
       <button role="tab" data-tab="guide" id="tab-guide" aria-controls="panel-guide">
-        <span class="tab-number">0</span>
+        <span class="tab-number">0b</span>
         <span class="tab-text"><span class="tab-title"><span class="title-long">Rule guide</span><span class="title-short">Guide</span></span>
           <span class="tab-summary">3 examples</span></span>
       </button>
@@ -42,6 +48,10 @@
           <span class="tab-summary">no search yet</span></span>
       </button>
     </nav>
+
+    <div data-panel="tutorial" id="panel-tutorial" role="tabpanel" aria-labelledby="tab-tutorial">
+      {% include "webpage_tutorial.html" %}
+    </div>
 
     <div data-panel="guide" id="panel-guide" role="tabpanel" aria-labelledby="tab-guide">
       {% include "tutorial.html" %}
@@ -71,7 +81,7 @@
       <p class="hint">
         To use your own reagents, upload one or more files: <strong>.csv</strong> with a column
         <code>smiles</code>, or <strong>.sdf</strong> (e.g. exported from your chemical inventory).
-        Several files are combined. Salts, stereochemistry and duplicates are removed automatically.
+        Several files are combined. Salts are split into their parts (e.g. amine hydrochloride → amine and HCl), protonated amines are neutralized, carboxylates are kept as anion and acid, and stereochemistry, isotope labels and duplicates are removed automatically.
       </p>
       <p class="hint">
         SDF entries without a readable structure are looked up on <strong>PubChem</strong>
@@ -91,13 +101,22 @@
     <section class="card" id="rules-card" data-panel="rules" role="tabpanel" aria-labelledby="tab-rules">
       <h2>Reaction rules</h2>
       <p id="rules-status" class="status-line">Loading reaction rules…</p>
-      <p class="hint">Untick the reactions you don't want in your synthesis. Click a name to see the rule.
-        New to writing rules? See the <button class="link-button" data-goto="guide">rule guide (tab 0)</button>.</p>
+      <p class="hint">Untick the reactions you don't want in your synthesis. Click a name to see the rule
+        and to move it to another folder.
+        New to writing rules? See the <button class="link-button" data-goto="guide">rule guide (tab 0b)</button>.</p>
       <div class="rules-toolbar">
         <input id="rules-filter" type="search" placeholder="Search rules…" aria-label="Search rules">
         <button id="rules-all" class="link-button">Select all</button>
         <button id="rules-none" class="link-button">Select none</button>
       </div>
+      <div class="rules-setup">
+        <span class="hint small">Your ticks and folders are kept in this browser.</span>
+        <button id="setup-save" class="link-button">Save setup to file</button>
+        <label for="setup-file" class="link-button">Load setup from file</label>
+        <input id="setup-file" type="file" accept=".json,application/json" hidden>
+        <button id="setup-reset" class="link-button">Reset folders</button>
+      </div>
+      <p id="setup-message" class="message" aria-live="polite"></p>
       <ul id="rules-list" class="rules-list"></ul>
       <div id="rule-detail" class="rule-detail" hidden></div>
 
@@ -119,6 +138,36 @@
         </p>
         <label>Description (optional)<input id="rule-description" type="text" maxlength="1000"></label>
 
+        <div class="rule-step" id="encode-step">
+          <h3><span class="step-number">0</span> Start from example reactions (optional)</h3>
+          <p class="hint">
+            Paste or draw one to four examples of the same reaction as reaction SMILES
+            (<code>reactants&gt;&gt;products</code>). LAGER balances them, maps the atoms (SynKit),
+            finds the reaction centre and writes a draft forward rule into step 1.
+            Several different examples make the rule better: atoms that differ between them are
+            left out, and only conditions true for all of them are suggested.
+          </p>
+          <p id="encode-unavailable" class="message error" hidden></p>
+          <div id="encode-body">
+            <div id="encode-inputs"></div>
+            <div id="encode-draw" class="encode-draw" hidden>
+              <div class="rule-detail-head">
+                <p id="encode-draw-title" class="hint small"></p>
+                <button id="encode-draw-close" class="link-button">Close editor</button>
+              </div>
+              <div id="encode-editor"></div>
+            </div>
+            <div class="actions">
+              <button id="encode-add" class="link-button">+ Add another example</button>
+              <button id="encode-prepare">Check reactions</button>
+            </div>
+            <p id="encode-message" class="message" hidden></p>
+            <div id="encode-balance"></div>
+            <div id="encode-mapping"></div>
+            <div id="encode-result"></div>
+          </div>
+        </div>
+
         <div class="rule-step">
           <h3><span class="step-number">1</span> Forward reaction</h3>
           <textarea id="rule-forward" rows="12" spellcheck="false" placeholder='rule [
@@ -128,6 +177,11 @@
 	right [ … ]
 	constrainAdj [ … ]
 ]'></textarea>
+          <div class="condition-row">
+            <input id="forward-condition" type="text" spellcheck="false" aria-label="Condition to add to the forward reaction"
+                   placeholder='e.g. constrainAdj [ id 2 op "=" count 1 nodeLabels [ label "O" ] ]'>
+            <button id="forward-condition-add" class="button secondary">Add condition</button>
+          </div>
           <div class="actions">
             <label class="button secondary" for="rule-file">Load .gml file…</label>
             <input id="rule-file" type="file" accept=".gml,.txt" hidden>
@@ -141,6 +195,11 @@
           <h3><span class="step-number">2</span> Retrosynthetic rule – please check</h3>
           <div id="inverse-report"></div>
           <textarea id="rule-inverse" rows="12" spellcheck="false"></textarea>
+          <div class="condition-row">
+            <input id="inverse-condition" type="text" spellcheck="false" aria-label="Condition to add to the retrosynthetic rule"
+                   placeholder='e.g. constrainAdj [ id 2 op "=" count 1 nodeLabels [ label "O" ] ]'>
+            <button id="inverse-condition-add" class="button secondary">Add condition</button>
+          </div>
           <div id="inverse-preview"></div>
           <label class="check-line">
             <input id="rule-approved" type="checkbox">
@@ -188,6 +247,7 @@
   <script src="{{ url_for('static', filename='tabs.js') }}"></script>
   <script src="{{ url_for('static', filename='ruleview.js') }}"></script>
   <script src="{{ url_for('static', filename='rules.js') }}"></script>
+  <script src="{{ url_for('static', filename='encoder.js') }}"></script>
   <script src="{{ url_for('static', filename='app.js') }}"></script>
   <script src="{{ url_for('static', filename='guide.js') }}"></script>
 </body>

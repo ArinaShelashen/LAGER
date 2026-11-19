@@ -57,11 +57,23 @@ function shorten(text, max) {
 
 function updateTargetSummary() {
   const smiles = smilesInput.value.trim();
-  tabs.setSummary("target", smiles ? shorten(smiles, 22) : "not set", smiles ? "ok" : "warn");
+  tabs.setSummary("target", smiles || "not set", smiles ? "ok" : "warn");
   runSummary.innerHTML = "";
   runSummary.append("Target: ", el("strong", smiles ? shorten(smiles, 40) : "not set"));
 }
 smilesInput.addEventListener("input", updateTargetSummary);
+
+// "Try this example" buttons in the tutorial: fill in the target and go to step 1
+for (const button of document.querySelectorAll("[data-example-smiles]")) {
+  button.addEventListener("click", () => {
+    smilesInput.value = button.dataset.exampleSmiles;
+    if (editor) { try { editor.readGenericMolecularInput(smilesInput.value); } catch { /* text only */ } }
+    smilesInput.value = button.dataset.exampleSmiles;
+    updateTargetSummary();
+    tabs.show("target");
+    window.scrollTo({ top: 0 });
+  });
+}
 updateTargetSummary();
 window.jsmeOnLoad = jsmeOnLoad;
 if (window.JSApplet && window.JSApplet.JSME) jsmeOnLoad(); // in case JSME loaded first
@@ -179,6 +191,7 @@ function showUploadedReactants(data) {
       "note warning-text"));
   }
 
+  // (salts are split into their parts, so the cleaned list can also be longer)
   const removed = data.n_read - data.n_final - data.n_metal_complexes;
   if (removed > 0) {
     reactantsReport.append(el("p",
@@ -187,8 +200,8 @@ function showUploadedReactants(data) {
         : `${removed} entries were removed as duplicates or invalid structures.`, "note"));
   }
   addExpandableList(data.n_metal_complexes, data.metal_complexes,
-    "entry contains metals or other elements the reaction rules cannot use (catalysts, organometallics, inorganic reagents) and was removed.",
-    "entries contain metals or other elements the reaction rules cannot use (catalysts, organometallics, inorganic reagents) and were removed.");
+    "entry consists only of metal ions (e.g. [Na+]) and was removed.",
+    "entries consist only of metal ions (e.g. [Na+]) and were removed.");
   addExpandableList(data.n_unreadable, data.unreadable,
     "structure in your SDF file(s) could not be read and was skipped.",
     "structures in your SDF file(s) could not be read and were skipped.");

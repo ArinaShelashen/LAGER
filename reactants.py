@@ -6,10 +6,11 @@ Accepted files:
   * SDF (e.g. exported from a chemical inventory); structures are read with RDKit,
     and entries RDKit cannot read are looked up on PubChem by CAS number or name
 
-All files are combined, salts are converted into their anion, metal complexes
-are removed (see below), and the rest
-is run through data_prep/clean_molecules.py (canonicalize, remove salts and
-stereochemistry, remove duplicates), exactly like on the command line.
+All files are combined, alkali/alkaline-earth salts are converted into their anion
+(see below), and the rest is run through data_prep/clean_molecules.py (split salts
+into their parts, neutralize, remove stereochemistry and isotopes, remove duplicates),
+exactly like on the command line. Molecules with any element are kept (organometallics,
+metal reagents): available molecules are only compared with the search's molecules.
 Nothing is kept on disk.
 """
 
@@ -32,12 +33,8 @@ CSV_TYPES = {".csv"}
 SDF_TYPES = {".sdf", ".sd"}
 MAX_LISTED = 50
 
-# Elements the reaction rules can work with. They are read from the rule files, so
-# adding a rule that uses e.g. Al or Na as a reactant keeps those compounds too.
-# A molecule with any other element can never be consumed by a rule (catalysts,
-# oxidants, reducing agents are not part of the rule graphs). These are removed
-# BEFORE cleaning: cleaning keeps only the largest fragment, which would turn e.g.
-# a Pd or Fe complex into its bare organic ligand.
+# Elements the reaction rules use as atom labels. Metals that a rule uses itself are
+# not split into ions below.
 INV_RULES = REPO / "inv_rules"
 FALLBACK_ELEMENTS = {"H", "B", "C", "N", "O", "F", "Si", "P", "S", "Cl", "Br", "I", "Mg"}
 
@@ -55,8 +52,6 @@ def elements_in_rules(rules_dir: Path = INV_RULES) -> set[str]:
 
 
 RULE_ELEMENTS = elements_in_rules()
-# Simple counter-ions, allowed only as separate single-atom ions (e.g. sodium salts)
-COUNTER_IONS = {"Li", "Na", "K", "Rb", "Cs", "Ca", "Sr", "Ba", "Mg", "Zn"}
 
 # Metals whose salts are ionic. Inventories often draw them as covalent molecules
 # (KCN as N#C[K], NaI as [Na]I). The rules need the anion ([C-]#N, [I-], ...),
@@ -114,20 +109,6 @@ def salt_to_ions(smiles: str) -> str | None:
     if len(keep) == len(fragments) and not to_break:
         return smiles                   # nothing changed
     return ".".join(Chem.MolToSmiles(f) for f in keep)
-
-
-def has_foreign_elements(smiles: str) -> bool:
-    """True if the molecule contains an element the rules cannot use."""
-    mol = Chem.MolFromSmiles(smiles, sanitize=False)
-    if mol is None:
-        return False                    # invalid SMILES are removed by the cleaning step
-    for fragment in Chem.GetMolFrags(mol):
-        atoms = [mol.GetAtomWithIdx(i).GetSymbol() for i in fragment]
-        if len(atoms) == 1 and atoms[0] in COUNTER_IONS:
-            continue                    # e.g. [Na+] next to a carboxylate
-        if any(a not in RULE_ELEMENTS for a in atoms):
-            return True
-    return False
 
 
 def _label(row) -> str:
@@ -218,7 +199,7 @@ def prepare_reactants(uploads: list[tuple[str, bytes]],
             report["files"].append({"name": name, "molecules": len(df)})
             frames.append(df)
 
-        on_progress("Cleaning the molecules (salts, stereochemistry, duplicates)…")
+        on_progress("Cleaning the molecules (salts, charges, stereochemistry, duplicates)…")
 
         combined = pd.concat(frames, ignore_index=True)
         if combined.empty:
@@ -231,19 +212,12 @@ def prepare_reactants(uploads: list[tuple[str, bytes]],
         combined["smiles"] = combined["smiles"].apply(salt_to_ions)
         only_ions = combined["smiles"].isna()
         report["n_salts"] = int((~only_ions & (combined["smiles"] != combined["original_smiles"])).sum())
+        report["metal_complexes"] = sorted({_label(r) for r in combined[only_ions].to_dict("records")})
+        report["n_metal_complexes"] = int(only_ions.sum())
         removed.append(combined[only_ions].assign(reason="only metal ions, no usable part"))
-        combined = combined[~only_ions]
-
-        # 2. Remove catalysts, organometallics and other metal compounds
-        foreign = combined["smiles"].apply(has_foreign_elements)
-        report["metal_complexes"] = sorted({_label(r) for r in combined[foreign].to_dict("records")})
-        report["n_metal_complexes"] = int(foreign.sum() + only_ions.sum())
-        removed.append(combined[foreign].assign(
-            reason="contains metals or elements the reaction rules cannot use"))
-        combined = combined[~foreign].drop(columns=["original_smiles"])
+        combined = combined[~only_ions].drop(columns=["original_smiles"])
         if combined.empty:
-            raise ReactantsError("All uploaded molecules contain metals or other elements "
-                                 "that the reaction rules cannot use.")
+            raise ReactantsError("The uploaded entries contain only metal ions.")
 
         raw_csv, clean_csv = tmp / "combined.csv", tmp / "clean.csv"
         combined.to_csv(raw_csv, index=False)

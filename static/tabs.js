@@ -31,6 +31,7 @@
     if (!tab) return;
     const summary = tab.querySelector(".tab-summary");
     summary.textContent = text;
+    summary.title = text;               // full text on hover (long SMILES are cut off)
     tab.dataset.state = state || "";
   }
 

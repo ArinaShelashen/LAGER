@@ -5,7 +5,7 @@ Every line should end with "OK".
 """
 from rdkit import Chem
 
-from reactants import RULE_ELEMENTS, has_foreign_elements, salt_to_ions
+from reactants import RULE_ELEMENTS, salt_to_ions
 
 print("Elements used by the rules:", " ".join(sorted(RULE_ELEMENTS)))
 print()
@@ -42,8 +42,3 @@ for name, smiles, expected in CASES:
     status = "OK" if same(result, expected) else f"DIFFERENT (expected {expected})"
     print(f"{name:24s} {smiles:22s} -> {str(result):24s} {status}")
 
-print()
-print("Removed as metal compounds (should both be True):",
-      has_foreign_elements("CC(C)P(C)C.[Fe]"), has_foreign_elements("Cl[Pd]Cl"))
-print("Kept (should both be False):",
-      has_foreign_elements("OB(O)c1ccccc1"), has_foreign_elements("C[Mg]Br"))

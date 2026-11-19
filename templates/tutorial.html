@@ -37,8 +37,57 @@
 <section class="card guide">
   <h2>How reaction rules work</h2>
   <div class="guide-text">
-    <!-- Your introduction here -->
-    <p class="placeholder">Introduction – to be written.</p>
+    <p>
+      A reaction rule describes one type of reaction as a change of a small graph: atoms are the
+      nodes, bonds are the edges. LAGER uses the graph-grammar software MØD, and rules are written
+      in its GML format. A rule has three parts:
+    </p>
+    <ul>
+      <li><strong><code>left</code></strong>: bonds (and atoms) that exist only before the reaction, so they are <strong>broken</strong>.</li>
+      <li><strong><code>right</code></strong>: bonds that exist only after the reaction, so they are <strong>formed</strong>.</li>
+      <li><strong><code>context</code></strong>: atoms and bonds that must be present but do not change.</li>
+    </ul>
+    <p>
+      In the rule pictures these are the panels <strong>L</strong>, <strong>K</strong> (context) and
+      <strong>R</strong>. Broken bonds are red, formed bonds green. Every atom has an
+      <code>id</code> (the small number); the same id is the same atom on both sides. Hydrogens are
+      atoms of their own, so a rule that moves an H has to list it. A label is an element symbol,
+      with a charge if needed (<code>O-</code>, <code>N+</code>), or a <strong>wildcard</strong>
+      starting with <code>_</code> (e.g. <code>_X</code>) that matches any atom.
+    </p>
+    <p>
+      <strong>Two directions.</strong> The search works backwards, so it uses the
+      <strong>retrosynthetic rule</strong> (<code>inv_rules/&lt;name&gt;_inv.gml</code>): its left
+      side is the product, its right side the precursors. The <strong>forward rule</strong>
+      (<code>forward_rules/&lt;name&gt;.gml</code>) is the same reaction written forwards. After each
+      step LAGER applies all forward rules to the precursors to find side reactions with other
+      groups of the molecule. When you add a rule (tab 3) you write the forward reaction, and LAGER
+      creates the retrosynthetic rule from it.
+    </p>
+    <p>
+      <strong>Where a rule matches.</strong> A rule can be applied wherever its left side
+      (<code>left</code> + <code>context</code>) is found in a molecule. Atoms that are not in the
+      rule are not checked: an atom may have more neighbours than the rule shows. A small rule is
+      therefore very general, often too general. Two things make it more specific:
+    </p>
+    <ul>
+      <li><strong>More context</strong>: more atoms around the reaction centre that must be present.</li>
+      <li><strong>Conditions</strong>, which are checked on the left side. <code>constrainAdj</code> counts the
+        neighbours of an atom, optionally only those with certain labels and bond types:
+        <code>constrainAdj [ id 1 op "=" count 2 nodeLabels [ label "O" ] ]</code> means
+        “atom 1 has exactly 2 O neighbours” (<code>op</code> can be <code>=</code>, <code>&lt;</code>,
+        <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>). <code>constrainLabelAny</code> lists
+        what a wildcard may be: <code>constrainLabelAny [ label "_X" labels [ label "Cl" label "Br" ] ]</code>.</li>
+    </ul>
+    <p>
+      The three examples below show the reaction centre, the context and the conditions of real
+      LAGER rules. The pictures show the forward reaction; the numbers are the atom ids of the rule.
+      Click <em>Show the rule</em> to see the retrosynthetic rule as the search uses it.
+    </p>
+    <p class="hint small">
+      Rule names matter: names containing <code>protection</code> or <code>deprotection</code> are
+      treated as cheap helper steps in the search.
+    </p>
   </div>
 </section>
 
@@ -56,11 +105,44 @@
        ["[2H:6][O:2][C:1](=[O:5])c1ccccc1", "[H:4][NH:3][CH2:7]c1ccccc1"],
        ["[O:5]=[C:1](c1ccccc1)[NH:3][CH2:7]c1ccccc1", "[H:4][O:2][2H:6]"], "1,2,3,4") }}
   <h3>Reaction centre</h3>
-  <div class="guide-text">{{ placeholder() }}</div>
+  <div class="guide-text"><p>
+      Four bonds change. In the retrosynthetic direction the amide bond <strong>C1–N3</strong> and the
+      bond <strong>O2–H4</strong> break, and <strong>C1–O2</strong> and <strong>N3–H4</strong> form:
+      the amide becomes the carboxylic acid and the amine. Forwards this is acid + amine → amide + water.
+    </p>
+    <p>
+      Atom 6 is labelled <code>2H</code>: a marker for an <strong>activated</strong> acid
+      (<code>C(=O)O[2H]</code>, standing for the acid activated by a coupling reagent). The water-like
+      molecule <code>[2H]O</code> (“activator”) is in the side-product list, so the search always has it.
+      After this rule the search must apply <code>COOH_activation</code> next, which turns the marked
+      acid back into the normal acid. In this way an amide coupling always comes with its activation step.
+    </p>
+    <p>
+      Why the marker? Without it, the rule would say that any carboxylic acid and any amine react
+      whenever they meet. LAGER would then expect, for example, an amino acid to react with every other
+      acid in the flask, and even with itself, and the side-reaction check would report such reactions
+      almost everywhere. In reality an amide coupling needs an activating (coupling) reagent. LAGER does
+      not name a particular one, because the choice of activators is wide (carbodiimides, uronium salts,
+      acid chlorides, …). Instead, the <code>2H</code> atom is a general placeholder for “some activator”,
+      which keeps the rule general.
+    </p></div>
   <h3>Context</h3>
-  <div class="guide-text">{{ placeholder() }}</div>
+  <div class="guide-text"><p>
+      <strong>O5</strong> (the C=O oxygen on C1) makes sure that only amides are cut, not every
+      C–N bond. <strong>C7</strong> requires a carbon on the nitrogen, so the amine is a primary or
+      secondary amine, not ammonia. <strong>2H6</strong> on O2 is the activation marker described above.
+    </p></div>
   <h3>Conditions</h3>
-  <div class="guide-text">{{ placeholder() }}</div>
+  <div class="guide-text"><p>The retrosynthetic rule has three conditions:</p>
+    <ul>
+      <li><strong>C1 has exactly 1 O neighbour</strong>: only the C=O. This excludes carbamates
+        (N–C(=O)–O), which are made differently. In the forward rule the same condition reads
+        “exactly 2 O neighbours” (a carboxylic acid), because the rule itself adds the O–C1 bond.
+        LAGER translates such counts automatically when it turns a rule around.</li>
+      <li><strong>N3 has no S neighbour</strong>: no sulfonamides.</li>
+      <li><strong>C7 has no double bond to O</strong>: the other substituent on N is not a carbonyl,
+        so imides and ureas are not cut here.</li>
+    </ul></div>
 </section>
 
 <!-- Example 2 --------------------------------------------------------------- -->
@@ -69,11 +151,32 @@
        ["[H:1][C:2](=[O:3])[c:7]1ccccc1", "C[CH2:6][Mg:5][Br:4]", "[H:8][O:9][H:10]"],
        ["[H:1][C:2]([O:3][H:8])([CH2:6]C)[c:7]1ccccc1", "[H:10][O:9][Mg:5][Br:4]"], "2,3,5,6,8,9") }}
   <h3>Reaction centre</h3>
-  <div class="guide-text">{{ placeholder() }}</div>
+  <div class="guide-text"><p>
+      This rule includes the aqueous work-up. Forwards, the Grignard carbon <strong>C6</strong>
+      bonds to the carbonyl carbon <strong>C2</strong>, the C2=O3 double bond becomes single, and
+      water protonates the alkoxide: <strong>H8</strong> moves from O9 to O3, and O9 binds to Mg
+      (HO–Mg–X). In the retrosynthetic direction the alcohol C2–O3–H8 is cut into the carbonyl
+      compound, the Grignard reagent C6–Mg5–X4 and water.
+    </p></div>
   <h3>Context</h3>
-  <div class="guide-text">{{ placeholder() }}</div>
+  <div class="guide-text"><p>
+      <strong>_Z1</strong> and <strong>_Y7</strong> are the other two substituents of the carbonyl
+      carbon. They are wildcards that may be <strong>H or C</strong>, so one rule covers formaldehyde,
+      aldehydes and ketones but not esters or amides (an O or N there would not match).
+      <strong>_X4</strong> is the halogen of the Grignard reagent (Cl, Br or I), and
+      <strong>H10</strong> belongs to the water of the work-up.
+    </p></div>
   <h3>Conditions</h3>
-  <div class="guide-text">{{ placeholder() }}</div>
+  <div class="guide-text"><ul>
+      <li><strong>C6 has no double or triple bond to O, N or S</strong>: the carbon that carries Mg
+        cannot be part of a C=O, C=N, C≡N or C=S group, because a Grignard reagent would attack it itself.</li>
+      <li><strong><code>constrainLabelAny</code></strong> restricts the three wildcards:
+        <code>_X</code> to Cl, Br, I and <code>_Y</code>, <code>_Z</code> to H, C.</li>
+    </ul>
+    <p class="hint small">
+      “Create rule from example reactions” makes wildcards like these automatically when your
+      examples differ at an atom (e.g. one Grignard with Br, one with Cl).
+    </p></div>
 </section>
 
 <!-- Example 3 --------------------------------------------------------------- -->
@@ -82,9 +185,27 @@
        ["C[CH2:13][O:12][P:9]([O:10][CH2:11]C)[c:14]1ccccc1", "[Br:3][CH2:1]c1ccccc1"],
        ["C[CH2:13][O:12][P:9](=[O:10])([CH2:1]c1ccccc1)[c:14]1ccccc1", "C[CH2:11][Br:3]"], "1,3,9,10,11") }}
   <h3>Reaction centre</h3>
-  <div class="guide-text">{{ placeholder() }}</div>
+  <div class="guide-text"><p>
+      Forwards, the phosphorus <strong>P9</strong> of the phosphonite attacks the alkyl bromide:
+      the bond <strong>C1–Br3</strong> breaks and <strong>P9–C1</strong> forms. The bromide then
+      removes an ethyl group from the P–O–ethyl: <strong>O10–C11</strong> breaks,
+      <strong>C11–Br3</strong> forms (ethyl bromide), and O10 becomes the P=O oxygen. The
+      retrosynthetic rule does the reverse: phosphinate + ethyl bromide → phosphonite + alkyl bromide.
+    </p></div>
   <h3>Context</h3>
-  <div class="guide-text">{{ placeholder() }}</div>
+  <div class="guide-text"><p>
+      The context fixes the type of phosphorus compound. Besides O10, the phosphorus must have a
+      second alkoxy group (<strong>O12–C13</strong>) and one carbon substituent
+      (<strong>C14</strong>): a dialkyl alkyl/aryl phosphonite R–P(OR′)<sub>2</sub>. The other
+      Arbuzov rules have the same reaction centre but a different context: three alkoxy groups
+      (trialkyl phosphite) or one alkoxy group and two carbons (alkyl dialkylphosphinite).
+    </p></div>
   <h3>Conditions</h3>
-  <div class="guide-text">{{ placeholder() }}</div>
+  <div class="guide-text"><ul>
+      <li><strong>C1 has no aromatic, double or triple bond</strong>: the halide is an sp³ alkyl
+        halide. Both steps are S<sub>N</sub>2 reactions, which do not work on aryl or vinyl halides.</li>
+      <li><strong>C11 has no aromatic, double or triple bond</strong> and <strong>at most 1 C
+        neighbour</strong>: the group removed from oxygen is methyl or a primary alkyl (e.g. ethyl),
+        which bromide can attack in an S<sub>N</sub>2 reaction.</li>
+    </ul></div>
 </section>

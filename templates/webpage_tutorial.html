@@ -1,0 +1,121 @@
+{# Tab 0a: how to use the web page, with the example target.
+   The pictures are in static/tutorial/ and are made by data_prep/make_tutorial_screenshots.py
+   (run it again after changing the page). The numbers in the lists match the orange markers. #}
+
+{% set example = "Clc1c(Cl)cc(NC(=O)CC(=O)NO)cc1" %}
+
+{% macro figure(name, alt) -%}
+  <figure class="tutorial-figure">
+    <img src="{{ url_for('static', filename='tutorial/' + name) }}" alt="{{ alt }}" loading="lazy">
+  </figure>
+{%- endmacro %}
+
+<section class="card tutorial">
+  <h2>How to use LAGER</h2>
+  <p>
+    LAGER works <strong>backwards</strong> from the molecule you want (the <em>target</em>) to molecules
+    you can buy or have in the lab (the <em>starting materials</em>). In each step it applies a
+    <em>reaction rule</em> in the retrosynthetic direction, breaking a molecule into simpler
+    precursors, until everything is a starting material. It ranks the pathways by the number of
+    steps and by how easy the intermediates are to make (synthetic accessibility score).
+  </p>
+  <p>The page has four steps, from left to right in the tabs at the top. This tutorial goes through them with an example.</p>
+
+  <div class="tutorial-example">
+    <img class="mol" alt="{{ example }}" src="{{ url_for('depict', smiles=example) }}">
+    <div>
+      <p><strong>Example target:</strong> a hydroxamic acid made from 3,4-dichloroaniline</p>
+      <p><code>{{ example }}</code></p>
+      <button data-example-smiles="{{ example }}">Try this example</button>
+      <p class="hint small">Fills in the target in step 1. Then click <strong>Find pathways</strong>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="card tutorial">
+  <h2>The page at a glance</h2>
+  {{ figure("overview.png", "The tabs at the top and the bar at the bottom of the page") }}
+  <ol class="tutorial-marks">
+    <li><strong>Help:</strong> this tutorial (0a) and the guide to writing reaction rules (0b).</li>
+    <li><strong>The four steps.</strong> Each tab shows a short summary of its step, e.g. the target
+      SMILES or how many reaction rules are used. You can check everything before you start the search.</li>
+    <li>The bar at the bottom is always visible and shows what will be searched.</li>
+    <li><strong>Find pathways</strong> starts the search. You can click it from any tab.</li>
+  </ol>
+</section>
+
+<section class="card tutorial">
+  <h2><span class="tab-number">1</span> Target molecule</h2>
+  {{ figure("target.png", "Step 1: molecule editor and SMILES field") }}
+  <ol class="tutorial-marks">
+    <li><strong>Draw</strong> the target in the molecule editor (JSME).</li>
+    <li>Or <strong>paste a SMILES</strong>. Drawing fills in this field automatically, and this field
+      is what is searched. A pasted SMILES is not drawn in the editor.</li>
+  </ol>
+</section>
+
+<section class="card tutorial">
+  <h2><span class="tab-number">2</span> Starting materials</h2>
+  {{ figure("materials.png", "Step 2: list of starting materials and upload") }}
+  <ol class="tutorial-marks">
+    <li>Which molecules count as available. By default this is the list of the lab's reagents.</li>
+    <li><strong>Upload your own</strong> instead: a <code>.csv</code> with a <code>smiles</code> column or an
+      <code>.sdf</code> file, e.g. exported from a chemical inventory. Several files are combined.
+      Salts are split into their parts, protonated amines neutralized, and stereochemistry, isotope labels and duplicates removed. SDF entries without a structure are looked
+      up on PubChem by name or CAS number (only these are sent, never your target).</li>
+  </ol>
+  <p class="hint small">The example works with the default list.</p>
+</section>
+
+<section class="card tutorial">
+  <h2><span class="tab-number">3</span> Reaction rules</h2>
+  {{ figure("rules.png", "Step 3: rule list with folders and a rule picture") }}
+  <ol class="tutorial-marks">
+    <li><strong>Search</strong> the rules by name.</li>
+    <li><strong>Folders</strong> group related rules (at first: all protections, all deprotections, rules
+      whose names start with the same word). The tick box switches all rules of the folder on or off;
+      click the name to open the folder. You can rename folders and move a rule to another folder
+      (in the rule panel). Your ticks and folders are kept in your browser; <strong>Save setup to
+      file</strong> keeps them as a <code>.json</code> file that you can load again later or on another computer.</li>
+    <li>A single rule: tick it to use it in the search, click its name to see it.</li>
+    <li>Switch between the <strong>retrosynthetic rule</strong> (used by the search) and the
+      <strong>forward reaction</strong> (used to check for side reactions with other groups of the molecule).</li>
+    <li>The rule picture: left side, right side and the unchanged context. Bonds that break are red,
+      bonds that form are green; atoms are coloured by element. Click an atom to highlight it.</li>
+    <li><strong>Add your own rule</strong>, written by hand or created from example reactions. See the
+      <button class="link-button" data-goto="guide">rule guide (0b)</button>.</li>
+  </ol>
+  <p class="hint small">For the example, keep all rules switched on.</p>
+</section>
+
+<section class="card tutorial">
+  <h2><span class="tab-number">4</span> Results</h2>
+  <p>After <strong>Find pathways</strong>, the page switches to the results tab and shows the progress
+    (the example takes only a few seconds):</p>
+  {{ figure("progress.png", "Step 4: the search running") }}
+  <ol class="tutorial-marks">
+    <li>The status: waiting, searching, done (or what went wrong).</li>
+    <li>The search log: how many pathways were found and after how many iterations. Searches take
+      from seconds to a few minutes and are stopped after 15 minutes.</li>
+  </ol>
+  <p>When it is finished, the best pathways are shown (up to three), the best first:</p>
+  {{ figure("results.png", "Step 4: a pathway found for the example") }}
+  <ol class="tutorial-marks">
+    <li><strong>Download all (ZIP)</strong>: every pathway as picture and data, plus the starting
+      materials and reaction rules that were used, so the search can be repeated.</li>
+    <li>The pathway, read from left to right: the target, each retrosynthetic step with the name of
+      its rule, and the precursors. <strong>Green</strong> boxes are starting materials you have (buyable),
+      grey boxes are intermediates that are made in an earlier step. For the example, LAGER suggests
+      making the amide from methyl malonyl chloride and 3,4-dichloroaniline (Schotten–Baumann), then
+      turning the methyl ester into the hydroxamic acid with hydroxylamine.
+      A <em>“Warning! … side reactions detected”</em> means that the forward rules found other groups
+      in the molecule that could react under the same conditions – check these steps.
+      <em>g</em>, <em>h</em> and <em>f</em> are the search scores (cost so far, estimated remaining
+      cost, and their sum).</li>
+    <li>Download this pathway as a picture (PNG) or as data (JSON).</li>
+  </ol>
+  <p class="hint small">
+    No pathway found? Check that the rules you need are switched on (step 3) and that the starting
+    materials are in your list (step 2). If a reaction you need is missing, add it as a rule.
+  </p>
+</section>

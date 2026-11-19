@@ -38,7 +38,7 @@ TBA
 
 ---
 ### Requirements
-* **Python 3.10**
+* **Python 3.11**
 * **RDKit:** For cheminformatics, canonicalization, and SAscore calculations.
 * **MØD:** The C++ graph-rewriting engine executing the `.gml` rules.
 * **Graphviz:** Required for rendering the final pathway `.dot` files into `.png` images.

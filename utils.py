@@ -56,10 +56,7 @@ def remove_stereo(smiles: str) -> str | None:
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
         return None
-    for atom in mol.GetAtoms():
-        atom.SetChiralTag(Chem.ChiralType.CHI_UNSPECIFIED)
-    for bond in mol.GetBonds():
-        bond.SetStereo(Chem.BondStereo.STEREONONE)
+    Chem.RemoveStereochemistry(mol)     # chirality and E/Z, including the / \\ bond marks
     return Chem.MolToSmiles(mol, canonical=True)
 
 def remove_counterions(smiles):

@@ -32,6 +32,7 @@ from rdkit import Chem
 
 import os
 
+import encoder
 import rules
 from depict import molecule_svg as depict_molecule
 from lager_runner import BUYABLES, SearchTimeout, run_search
@@ -240,6 +241,30 @@ def add_rule():
     except rules.RuleError as e:
         return jsonify(error=str(e)), 400
     return jsonify(rule=rule), 201
+
+
+MAX_EXAMPLE_REACTIONS = 4
+
+
+@app.get("/api/encode/status")
+def encode_status():
+    ok, message = encoder.available()
+    return jsonify(available=ok, message=message)
+
+
+@app.post("/api/encode/<action>")
+def encode(action):
+    """Rule from example reactions: prepare (balance) -> map (AAM) -> build (GML) -> test."""
+    if action not in ("prepare", "map", "build", "test"):
+        abort(404)
+    data = request.get_json(silent=True) or {}
+    for key in ("reactions", "mapped"):
+        if len(data.get(key) or []) > MAX_EXAMPLE_REACTIONS:
+            return jsonify(error=f"Please use at most {MAX_EXAMPLE_REACTIONS} example reactions."), 400
+    try:
+        return jsonify(encoder.run({**data, "action": action}))
+    except encoder.EncoderError as e:
+        return jsonify(error=str(e)), 400
 
 
 @app.delete("/api/rules/<rule_id>")

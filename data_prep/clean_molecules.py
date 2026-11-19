@@ -1,19 +1,84 @@
+"""
+clean_molecules.py – cleans a list of available reactants (CSV with a 'smiles' column).
+
+For every entry:
+  * stereochemistry and isotope labels are removed (deuterated compounds become the
+    normal compound: LAGER uses the label 2H as the activator marker, see side_products_clean.csv,
+    so do NOT run this script on the side-product list)
+  * every part of a salt or mixture becomes its own entry, e.g. an amine hydrochloride
+    gives the amine and HCl, a TFA salt the amine and TFA. Bare metal cations ([Na+], ...)
+    are dropped; anions ([I-], [Cl-], ...) are kept because some rules use them.
+  * protonated amines are neutralized (R-NH3+ -> R-NH2), zwitterions become the neutral
+    amino acid
+  * a carboxylate (R-COO-) is kept as the anion AND as the acid (R-COOH): a chemist can
+    use either
+Then duplicates are removed. All other columns are kept (of the first occurrence).
+"""
 import argparse
 import os
 import pandas as pd
-import sys, os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils import canonical_smiles, remove_stereo, remove_counterions
+from rdkit import Chem
+
+# Protonated nitrogen with H (ammonium, pyridinium-H), not N+ bonded to a negative atom (nitro, N-oxide)
+PROTONATED_N = Chem.MolFromSmarts("[#7+;!H0;!$([#7+]~[#8-,#7-,#16-,#6-])]")
+CARBOXYLATE_O = Chem.MolFromSmarts("[CX3](=O)[O-]")
+NON_METALS = {"H", "He", "B", "C", "N", "O", "F", "Ne", "Si", "P", "S", "Cl", "Ar", "As", "Se",
+              "Br", "Kr", "Te", "I", "Xe", "At", "Rn"}
 
 
-def cleaning_pipeline(s):
-    """Wraps the pipeline and safely handles NaN/float values from Pandas."""
-    if not isinstance(s, str):
-        return None
+def _add_h(atom, change):
+    """Changes the charge of an atom by `change` and its hydrogens by the same amount (+H+ / -H+)."""
+    atom.SetNumExplicitHs(max(0, atom.GetTotalNumHs() + change))
+    atom.SetNoImplicit(True)
+    atom.SetFormalCharge(atom.GetFormalCharge() + change)
+
+
+def _smiles(mol):
     try:
-        return remove_counterions(canonical_smiles(remove_stereo(s)))
+        Chem.SanitizeMol(mol)
+        return Chem.MolToSmiles(mol, canonical=True) or None
     except Exception:
         return None
+
+
+def clean_entry(s):
+    """One input SMILES -> list of cleaned SMILES (see the top of the file). [] if unreadable."""
+    if not isinstance(s, str):
+        return []
+    mol = Chem.MolFromSmiles(s)
+    if mol is None:
+        return []
+    Chem.RemoveStereochemistry(mol)
+    for atom in mol.GetAtoms():
+        atom.SetIsotope(0)
+    mol = Chem.RemoveHs(mol)                      # former [2H] atoms become implicit H
+
+    results = []
+    for fragment in Chem.GetMolFrags(mol, asMols=True):
+        if fragment.GetNumAtoms() == 1:
+            atom = fragment.GetAtomWithIdx(0)
+            if atom.GetFormalCharge() > 0 and atom.GetSymbol() not in NON_METALS:
+                continue                          # bare metal cation, e.g. [Na+]
+        fragment = Chem.RWMol(fragment)
+        protonated = [m[0] for m in fragment.GetSubstructMatches(PROTONATED_N)]
+        carboxylate = [m[2] for m in fragment.GetSubstructMatches(CARBOXYLATE_O)]
+        for idx in protonated:
+            _add_h(fragment.GetAtomWithIdx(idx), -1)
+        if protonated and carboxylate:            # zwitterion -> neutral amino acid only
+            for idx in carboxylate:
+                _add_h(fragment.GetAtomWithIdx(idx), +1)
+            carboxylate = []
+        smiles = _smiles(fragment)
+        if smiles:
+            results.append(smiles)
+        if carboxylate:                           # also the acid
+            acid = Chem.RWMol(fragment)
+            for idx in carboxylate:
+                _add_h(acid.GetAtomWithIdx(idx), +1)
+            acid_smiles = _smiles(acid)
+            if acid_smiles:
+                results.append(acid_smiles)
+    return results
 
 
 def main():
@@ -61,8 +126,9 @@ def main():
     original_count = len(df)
 
     print("🧪 Cleaning and canonicalizing SMILES...")
-    # Create a temporary column with the cleaned SMILES
-    df["clean_smiles"] = df["smiles"].apply(cleaning_pipeline)
+    # Create a temporary column with the cleaned SMILES; one row per part of a salt or mixture
+    df["clean_smiles"] = df["smiles"].apply(clean_entry)
+    df = df.explode("clean_smiles")
 
     print("🧹 Removing invalid molecules and duplicates...")
     # 1. Drop rows where RDKit failed to parse the SMILES
@@ -79,8 +145,8 @@ def main():
     df.to_csv(output_file, index=False)
 
     final_count = len(df)
-    print(f"✅ Done! Shrunk from {original_count} to {final_count} unique, valid molecules. All metadata preserved.")
+    print(f"✅ Done! {original_count} entries gave {final_count} unique, valid molecules. All metadata preserved.")
 
 
 if __name__ == "__main__":
-    main()
+    main()

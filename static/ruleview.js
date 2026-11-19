@@ -1,7 +1,7 @@
 // ruleview.js – reads MØD rules in GML format and draws them as three panels
 // (L = left side, K = what stays, R = right side), in the style of MolFoundry:
-// atoms as dashed circles, bonds that are removed in blue (L),
-// bonds that are formed in green (R). Click an atom to highlight it in all panels.
+// atoms as dashed circles, bonds that are removed in red (L),
+// bonds that are formed in green (R), both drawn thicker. Click an atom to highlight it in all panels.
 //
 // Usage:  const rule = RuleView.parse(gmlText);   // throws on syntax errors
 //         RuleView.render(containerElement, rule);
@@ -228,8 +228,16 @@
   // -------------------------------------------------------------------------
   const SVG = "http://www.w3.org/2000/svg";
   const R_ATOM = 17;
-  const COLORS = { bond: "#3c4043", removed: "#1a73e8", added: "#0f9d58", selected: "#e53935",
+  const COLORS = { bond: "#3c4043", removed: "#d93025", added: "#0f9d58", selected: "#f9ab00",
                    atomFill: "#ffffff", atomStroke: "#3c4043", text: "#202124", id: "#80868b" };
+
+  // Usual element colours (CPK/Jmol), darkened where needed to be readable on white
+  const ELEMENT_COLORS = {
+    H: "#6b6b6b", C: "#202124", N: "#2346d9", O: "#d32f2f", F: "#2e8b2e", Cl: "#1f9a1f",
+    Br: "#a52a2a", I: "#8e24aa", S: "#b58900", P: "#e07000", B: "#d0706f", Si: "#a07850",
+    Li: "#8e44ad", Na: "#7b3fc4", K: "#6a32b0", Mg: "#2e7d32", Ca: "#2e7d32", Zn: "#5c6bc0",
+    Cu: "#b8692e", Fe: "#c0582b", Pd: "#00697f", Pt: "#6f7f8f", Sn: "#5f7f7f", Se: "#c77800",
+  };
 
   function svgEl(tag, attrs, parent) {
     const e = document.createElementNS(SVG, tag);
@@ -246,6 +254,7 @@
     const m = /^(\d*)([A-Za-z_][A-Za-z0-9_]*?)(\d*[+-]+)?$/.exec(label);
     if (!m) { t.textContent = label; return; }
     const [, isotope, symbol, charge] = m;
+    t.setAttribute("fill", ELEMENT_COLORS[symbol] || COLORS.text);   // wildcards (_X) stay dark grey
     if (isotope) svgEl("tspan", { "font-size": "0.65em", dy: "-0.5em" }, t).textContent = isotope;
     svgEl("tspan", isotope ? { dy: "0.5em" } : {}, t).textContent = symbol;
     if (charge) {
@@ -259,13 +268,15 @@
     const ux = dx / d, uy = dy / d, nx = -uy, ny = ux;
     const a = { x: p.x + ux * R_ATOM, y: p.y + uy * R_ATOM };
     const b = { x: q.x - ux * R_ATOM, y: q.y - uy * R_ATOM };
+    const width = color === COLORS.bond ? 2 : 3.5;          // broken / formed bonds are thicker
     const line = (off, dashed) => svgEl("line", {
       x1: a.x + nx * off, y1: a.y + ny * off, x2: b.x + nx * off, y2: b.y + ny * off,
-      stroke: color, "stroke-width": 2, "stroke-linecap": "round",
+      stroke: color, "stroke-width": width, "stroke-linecap": "round",
       ...(dashed ? { "stroke-dasharray": "4 3" } : {}),
     }, g);
-    if (label === "=") { line(-3, false); line(3, false); }
-    else if (label === "#") { line(-4.5, false); line(0, false); line(4.5, false); }
+    const gap = width > 2 ? 1.3 : 1;                         // keep thick double bonds apart
+    if (label === "=") { line(-3 * gap, false); line(3 * gap, false); }
+    else if (label === "#") { line(-4.5 * gap, false); line(0, false); line(4.5 * gap, false); }
     else if (label === ":") { line(-2.5, false); line(2.5, true); }
     else {
       line(0, false);
