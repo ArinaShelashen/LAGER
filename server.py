@@ -35,7 +35,7 @@ import os
 import encoder
 import rules
 from depict import molecule_svg as depict_molecule
-from lager_runner import BUYABLES, SearchTimeout, run_search
+from lager_runner import DEFAULT_REACTANTS, SearchTimeout, run_search
 from reactants import ReactantsError, count_molecules, prepare_reactants
 
 # If set, deleting user-added rules needs this password (recommended on a shared server).
@@ -54,20 +54,24 @@ jobs = {}                      # job id -> dict with status, log, results
 reactant_sets = {}             # reactants id -> dict with cleaned CSV and report
 store_lock = threading.Lock()
 search_slots = threading.Semaphore(MAX_PARALLEL_SEARCHES)
-DEFAULT_REACTANTS_COUNT = count_molecules(BUYABLES)
+# The default lists for the page: [(key, name, description, number of molecules)]
+DEFAULT_LISTS = [(key, name, text, count_molecules(path))
+                 for key, (name, text, path) in DEFAULT_REACTANTS.items() if path.exists()]
 
 
 # ---------------------------------------------------------------------------
 # Background work and housekeeping
 # ---------------------------------------------------------------------------
-def _run_job(job_id: str, smiles: str, buyables_csv: bytes | None, rule_files, forward_files):
+def _run_job(job_id: str, smiles: str, buyables_csv: bytes | None, rule_files, forward_files,
+             default_list: str):
     job = jobs[job_id]
     with search_slots:                      # waits here if too many searches run
         job["status"] = "running"
         try:
             job["pathways"] = run_search(smiles, on_log=job["log"].append,
                                          buyables_csv=buyables_csv,
-                                         rule_files=rule_files, forward_files=forward_files)
+                                         rule_files=rule_files, forward_files=forward_files,
+                                         default_list=default_list)
             job["status"] = "done" if job["pathways"] else "no_pathway"
         except SearchTimeout as e:
             job["status"], job["error"] = "error", str(e)
@@ -101,8 +105,7 @@ def too_large(_):
 # ---------------------------------------------------------------------------
 @app.get("/")
 def index():
-    return render_template("index.html", default_name=BUYABLES.name,
-                           default_count=DEFAULT_REACTANTS_COUNT)
+    return render_template("index.html", default_lists=DEFAULT_LISTS)
 
 
 # ---------------------------------------------------------------------------
@@ -300,6 +303,9 @@ def start_job():
                                  "Please upload it again."), 400
         entry["last_used"] = time.time()
         buyables_csv = entry["csv"]
+    default_list = data.get("default_list") or "small"
+    if default_list not in [key for key, *_ in DEFAULT_LISTS]:
+        return jsonify(error="Unknown list of starting materials."), 400
 
     # Reaction rules: all rules except the ones the user switched off
     disabled = set(data.get("disabled_rules") or [])
@@ -313,9 +319,10 @@ def start_job():
     with store_lock:
         jobs[job_id] = {"status": "queued", "smiles": smiles, "log": [],
                         "pathways": [], "error": None, "created": time.time(),
-                        "buyables_csv": buyables_csv, "rules_used": used,
+                        "buyables_csv": buyables_csv, "default_list": default_list, "rules_used": used,
                         "user_rule_files": [p for r, p in zip(used, rule_files) if r["source"] == "user"]}
-    threading.Thread(target=_run_job, args=(job_id, smiles, buyables_csv, rule_files, forward_files),
+    threading.Thread(target=_run_job,
+                     args=(job_id, smiles, buyables_csv, rule_files, forward_files, default_list),
                      daemon=True).start()
     return jsonify(job_id=job_id), 202
 
@@ -366,7 +373,8 @@ def all_zip(job_id):
         if job["buyables_csv"] is not None:
             z.writestr("reactants_used.csv", job["buyables_csv"])
         else:
-            z.writestr("reactants_used.txt", f"Default list: {BUYABLES.name}\n")
+            name, _, path = DEFAULT_REACTANTS[job["default_list"]]
+            z.writestr("reactants_used.txt", f"Default list: {name} ({path.name})\n")
         # ... and which reaction rules (user-added ones are included as files)
         z.writestr("rules_used.txt", "\n".join(
             f"{r['id']}" + ("   (user-added)" if r["source"] == "user" else "")

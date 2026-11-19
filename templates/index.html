@@ -35,7 +35,7 @@
       <button role="tab" data-tab="reagents" id="tab-reagents" aria-controls="panel-reagents">
         <span class="tab-number">2</span>
         <span class="tab-text"><span class="tab-title"><span class="title-long">Starting materials</span><span class="title-short">Materials</span></span>
-          <span class="tab-summary">default · {{ default_count }}</span></span>
+          <span class="tab-summary">{{ default_lists[0][1] | lower }} · {{ default_lists[0][3] }}</span></span>
       </button>
       <button role="tab" data-tab="rules" id="tab-rules" aria-controls="rules-card">
         <span class="tab-number">3</span>
@@ -71,9 +71,16 @@
 
     <section class="card" data-panel="reagents" id="panel-reagents" role="tabpanel" aria-labelledby="tab-reagents">
       <h2>Available starting materials</h2>
-      <p id="reactants-status" class="status-line"
-         data-default-name="{{ default_name }}" data-default-count="{{ default_count }}">
-        Using the default list <strong>{{ default_name }}</strong> ({{ default_count }} molecules).
+      <fieldset id="default-lists" class="default-lists">
+        <legend>Default lists</legend>
+        {% for key, name, text, count in default_lists %}
+        <label><input type="radio" name="default-list" value="{{ key }}"
+                      data-name="{{ name }}" data-count="{{ count }}" {% if loop.first %}checked{% endif %}>
+          <strong>{{ name }}</strong> ({{ count }} molecules): {{ text }}</label>
+        {% endfor %}
+      </fieldset>
+      <p id="reactants-status" class="status-line">
+        Using the default list <strong>{{ default_lists[0][1] }}</strong> ({{ default_lists[0][3] }} molecules).
       </p>
       <div id="reactants-report" hidden></div>
       <p id="reactants-error" class="message error" hidden></p>

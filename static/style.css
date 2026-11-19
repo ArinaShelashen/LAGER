@@ -346,3 +346,9 @@ body { padding-bottom: 84px; }
   content: counter(mark); position: absolute; left: 0; top: -1px; width: 24px; height: 24px; border-radius: 50%;
   background: rgb(232, 89, 12); color: #fff; font-weight: 700; font-size: 0.85rem; display: grid; place-items: center;
 }
+
+/* Choice between the default lists of starting materials */
+.default-lists { border: 0; padding: 0; margin: 0 0 0.8rem; }
+.default-lists legend { font-weight: 600; margin-bottom: 0.3rem; padding: 0; }
+.default-lists label { display: block; margin: 0.25rem 0; cursor: pointer; font-weight: normal; }
+.default-lists input { margin-right: 0.4rem; }

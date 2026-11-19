@@ -115,7 +115,7 @@ runButton.addEventListener("click", async () => {
     const response = await fetch("/api/jobs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ smiles, reactants_id: reactantsId,
+      body: JSON.stringify({ smiles, reactants_id: reactantsId, default_list: selectedDefault().value,
                              disabled_rules: window.LagerRules ? LagerRules.disabledIds() : [] }),
     });
     const data = await response.json();
@@ -136,19 +136,34 @@ runButton.addEventListener("click", async () => {
 // ---------------------------------------------------------------------------
 // Reagents upload
 // ---------------------------------------------------------------------------
+// The ticked default list (small or extended inventory)
+function selectedDefault() {
+  return document.querySelector('input[name="default-list"]:checked');
+}
+
 function showDefaultReactants() {
+  const list = selectedDefault();
   reactantsId = null;
   reactantsStatus.innerHTML = "";
   reactantsStatus.append(
     "Using the default list ",
-    el("strong", reactantsStatus.dataset.defaultName),
-    ` (${reactantsStatus.dataset.defaultCount} molecules).`
+    el("strong", list.dataset.name),
+    ` (${list.dataset.count} molecules).`
   );
   reactantsStatus.classList.remove("error");
   reactantsReport.hidden = true;
   reactantsReport.innerHTML = "";
   reactantsReset.hidden = true;
-  tabs.setSummary("reagents", `default · ${reactantsStatus.dataset.defaultCount}`, "");
+  tabs.setSummary("reagents", `${list.dataset.name.toLowerCase()} · ${list.dataset.count}`, "");
+}
+
+// Choosing a default list replaces an uploaded list
+for (const radio of document.querySelectorAll('input[name="default-list"]')) {
+  radio.addEventListener("change", () => {
+    lastUpload = null;
+    reactantsError.hidden = true;
+    showDefaultReactants();
+  });
 }
 
 // A collapsible "N entries ... " line with the names underneath

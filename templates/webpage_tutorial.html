@@ -58,7 +58,8 @@
   <h2><span class="tab-number">2</span> Starting materials</h2>
   {{ figure("materials.png", "Step 2: list of starting materials and upload") }}
   <ol class="tutorial-marks">
-    <li>Which molecules count as available. By default this is the list of the lab's reagents.</li>
+    <li>Which molecules count as available: the <strong>extended inventory</strong> (building blocks
+      from MolPort) or the <strong>small inventory</strong> (a subsample of it, used by default).</li>
     <li><strong>Upload your own</strong> instead: a <code>.csv</code> with a <code>smiles</code> column or an
       <code>.sdf</code> file, e.g. exported from a chemical inventory. Several files are combined.
       Salts are split into their parts, protonated amines neutralized, and stereochemistry, isotope labels and duplicates removed. SDF entries without a structure are looked

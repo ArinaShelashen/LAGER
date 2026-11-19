@@ -18,7 +18,12 @@ REPO = Path(__file__).resolve().parent
 SEARCH_SCRIPT = REPO / "rs_a_star_branched.py"
 
 # Defaults – change these if you want other standard inputs
-BUYABLES = REPO / "lab_reactants_clean.csv"
+# Default lists of starting materials: key -> (name on the web page, description, file)
+DEFAULT_REACTANTS = {
+    "small": ("Small inventory", "a subsample of the extended inventory", REPO / "small_inventory.csv"),
+    "extended": ("Extended inventory", "building blocks from MolPort", REPO / "extended_inventory.csv"),
+}
+BUYABLES = DEFAULT_REACTANTS["small"][2]
 SIDE_PRODUCTS = REPO / "side_products_clean.csv"
 INV_RULES = REPO / "inv_rules"
 FORWARD_RULES = REPO / "forward_rules"
@@ -31,12 +36,12 @@ class SearchTimeout(Exception):
 
 def run_search(target_smiles: str, on_log=print, buyables_csv: bytes | None = None,
                rule_files: list[Path] | None = None,
-               forward_files: list[Path] | None = None) -> list[dict]:
+               forward_files: list[Path] | None = None, default_list: str = "small") -> list[dict]:
     """
     Run the A* search for one target.
     on_log(line) is called for every line the script prints.
     buyables_csv: the user's cleaned reactants list (CSV content);
-    None = use the default list.
+    None = use the default list named by default_list (a key of DEFAULT_REACTANTS).
     rule_files: the retrosynthetic rules to use (.gml files); None = all default rules.
     forward_files: forward rules for the side-reaction check; None = all default ones.
     Returns a list of pathways: [{"json": str, "png": bytes | None}, ...]
@@ -71,7 +76,7 @@ def run_search(target_smiles: str, on_log=print, buyables_csv: bytes | None = No
             buyables = run_dir / "user_reactants.csv"
             buyables.write_bytes(buyables_csv)
         else:
-            buyables = BUYABLES
+            buyables = DEFAULT_REACTANTS[default_list][2]
 
         cmd = [
             sys.executable, str(SEARCH_SCRIPT),

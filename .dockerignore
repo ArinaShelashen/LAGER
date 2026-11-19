@@ -14,7 +14,7 @@ imgs
 *_graphs
 retrosynthesis_tree.json
 
-# Raw datasets (the GUI uses lab_reactants_clean.csv and side_products_clean.csv)
+# Raw datasets (the GUI uses small_inventory.csv, extended_inventory.csv and side_products_clean.csv)
 data
 
 # Docker and start scripts themselves
@@ -25,3 +25,12 @@ start_lager.sh
 
 # Rules added through the web page (they live in a Docker volume)
 user_rules
+
+# Local files and experiments that are not part of the web page
+Chemicals_list*.sdf
+reactants1.csv
+lab_reactants_clean_old.csv
+pathway.svg
+reaction_autoencoding_test
+.ai
+CLAUDE.md
